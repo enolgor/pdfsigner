@@ -1,15 +1,14 @@
 name: Release CLI
-
+permissions:
+  contents: write
 on:
   push:
     tags:
       - 'cli/v*'
-
 jobs:
   build-and-release:
     name: Build & Release
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         goos: [linux, windows, darwin]
@@ -17,21 +16,17 @@ jobs:
         exclude:
           - goos: darwin
             goarch: 386
-
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.3'
-
       - name: Set tag and version env vars
         run: |
           echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           echo "VERSION=${GITHUB_REF#refs/tags/cli/}" >> $GITHUB_ENV
-
       - name: Build CLI binary
         working-directory: ./cli
         env:
