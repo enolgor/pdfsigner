@@ -43,7 +43,13 @@ jobs:
           if [ "$GOOS" = "windows" ]; then EXT=".exe"; fi
           OUTPUT="pdfsigner-${VERSION}-${GOOS}-${GOARCH}${EXT}"
           go build -ldflags "-X main.Version=$VERSION" -o "../dist/$OUTPUT" .
-
+      - name: Create Draft GitHub Release (if needed)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          gh release view "$VERSION" >/dev/null 2>&1 || \
+            gh release create "$VERSION" --title "$VERSION" --notes "Draft release for $VERSION" --draft
       - name: Upload binaries to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
