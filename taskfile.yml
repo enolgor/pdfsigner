@@ -1,0 +1,32 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  version:*:
+    vars:
+      MODULE: "{{ index .MATCH 0}}"
+    desc: 'Get the last version of a module'
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        wsl sh -c "git fetch --tags"
+        wsl sh -c "git tag --list '{{.MODULE}}/v*' --sort=-v:refname | head -n 1"
+        {{else}}
+        git fetch --tags
+        git tag --list '{{.MODULE}}/v*' --sort=-v:refname | head -n 1
+        {{end}}
+  release:*:*:
+    vars:
+      MODULE: "{{ index .MATCH 0}}"
+      VERSION: "{{ index .MATCH 1}}"
+    desc: 'Create a release for a module'
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+        wsl sh -c "git tag -a '{{.MODULE}}/{{.VERSION}}' -m 'Release {{.MODULE}} {{.VERSION}}'"
+        wsl sh -c "git push origin '{{.MODULE}}/{{.VERSION}}'"
+        {{else}}
+        git tag -a '{{.MODULE}}/{{.VERSION}}' -m 'Release {{.MODULE}} {{.VERSION}}'
+        git push origin '{{.MODULE}}/{{.VERSION}}'
+        {{end}}
