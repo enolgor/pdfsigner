@@ -23,29 +23,34 @@
 package actions
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 
-	"github.com/enolgor/pdfsigner/cli/actions/flags"
-	"github.com/enolgor/pdfsigner/signer/fonts"
+	"github.com/enolgor/pdfsigner/cli/pdfsigner/actions/flags"
+	"github.com/enolgor/pdfsigner/signer"
 	"github.com/urfave/cli/v3"
 )
 
-var ListFontsCommand *cli.Command = &cli.Command{
-	Name:     "list-fonts",
-	Usage:    "list available fonts",
-	Category: "signature",
+var PageDimCommand *cli.Command = &cli.Command{
+	Name:      "page-dim",
+	Usage:     "get page dimensions in pt",
+	Category:  "pdf",
+	Aliases:   []string{"pd"},
+	Arguments: []cli.Argument{pdfArgument},
 	Flags: []cli.Flag{
-		flags.LoadFontFlag,
+		flags.PageFlag,
 	},
-	DisableSliceFlagSeparator: true,
 	Action: func(ctx context.Context, cmd *cli.Command) (err error) {
-		if err := flags.LoadFonts(cmd); err != nil {
-			return err
+		var pdf *bytes.Reader
+		var width, height float64
+		if pdf, err = readPdf(cmd); err != nil {
+			return
 		}
-		for _, fontName := range fonts.ListLoadedFonts() {
-			fmt.Println(fontName)
+		if width, height, err = signer.GetPageDimensionsPt(pdf, flags.Page(cmd)-1); err != nil {
+			return
 		}
+		fmt.Println(width, height)
 		return
 	},
 }

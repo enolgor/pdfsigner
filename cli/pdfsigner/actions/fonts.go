@@ -20,42 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package main
+package actions
 
 import (
 	"context"
 	"fmt"
-	"os"
 
-	"github.com/enolgor/pdfsigner/cli/actions"
-	"github.com/rotisserie/eris"
+	"github.com/enolgor/pdfsigner/cli/pdfsigner/actions/flags"
+	"github.com/enolgor/pdfsigner/signer/fonts"
 	"github.com/urfave/cli/v3"
 )
 
-var Version = "dev"
-
-func main() {
-	cli.HelpFlag = &cli.BoolFlag{
-		Name:        "help",
-		Usage:       "show help",
-		HideDefault: true,
-		Local:       true,
-	}
-	cmd := &cli.Command{
-		Name:  "pdfsigner",
-		Usage: "A tool to sign pdfs",
-		Commands: []*cli.Command{
-			actions.PageCountCommand,
-			actions.PageDimCommand,
-			actions.SignatureDimCommand,
-			actions.SignCommand,
-			actions.ListFontsCommand,
-		},
-		DefaultCommand: actions.SignCommand.Name,
-		Version:        Version,
-	}
-	if err := cmd.Run(context.Background(), os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "fatal error:%s\n", eris.ToString(err, true))
-		os.Exit(1)
-	}
+var ListFontsCommand *cli.Command = &cli.Command{
+	Name:     "list-fonts",
+	Usage:    "list available fonts",
+	Category: "signature",
+	Flags: []cli.Flag{
+		flags.LoadFontFlag,
+	},
+	DisableSliceFlagSeparator: true,
+	Action: func(ctx context.Context, cmd *cli.Command) (err error) {
+		if err := flags.LoadFonts(cmd); err != nil {
+			return err
+		}
+		for _, fontName := range fonts.ListLoadedFonts() {
+			fmt.Println(fontName)
+		}
+		return
+	},
 }

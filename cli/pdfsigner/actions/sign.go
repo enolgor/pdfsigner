@@ -28,7 +28,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/enolgor/pdfsigner/cli/actions/flags"
+	"github.com/enolgor/pdfsigner/cli/pdfsigner/actions/flags"
 	"github.com/enolgor/pdfsigner/signer"
 	"github.com/enolgor/pdfsigner/signer/config"
 	"github.com/urfave/cli/v3"

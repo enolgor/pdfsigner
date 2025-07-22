@@ -20,37 +20,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package actions
+package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
+	"os"
 
-	"github.com/enolgor/pdfsigner/cli/actions/flags"
-	"github.com/enolgor/pdfsigner/signer"
+	"github.com/enolgor/pdfsigner/cli/pdfsigner/actions"
+	"github.com/rotisserie/eris"
 	"github.com/urfave/cli/v3"
 )
 
-var PageDimCommand *cli.Command = &cli.Command{
-	Name:      "page-dim",
-	Usage:     "get page dimensions in pt",
-	Category:  "pdf",
-	Aliases:   []string{"pd"},
-	Arguments: []cli.Argument{pdfArgument},
-	Flags: []cli.Flag{
-		flags.PageFlag,
-	},
-	Action: func(ctx context.Context, cmd *cli.Command) (err error) {
-		var pdf *bytes.Reader
-		var width, height float64
-		if pdf, err = readPdf(cmd); err != nil {
-			return
-		}
-		if width, height, err = signer.GetPageDimensionsPt(pdf, flags.Page(cmd)-1); err != nil {
-			return
-		}
-		fmt.Println(width, height)
-		return
-	},
+var Version = "dev"
+
+func main() {
+	cli.HelpFlag = &cli.BoolFlag{
+		Name:        "help",
+		Usage:       "show help",
+		HideDefault: true,
+		Local:       true,
+	}
+	cmd := &cli.Command{
+		Name:  "pdfsigner",
+		Usage: "A tool to sign pdfs",
+		Commands: []*cli.Command{
+			actions.PageCountCommand,
+			actions.PageDimCommand,
+			actions.SignatureDimCommand,
+			actions.SignCommand,
+			actions.ListFontsCommand,
+		},
+		DefaultCommand: actions.SignCommand.Name,
+		Version:        Version,
+	}
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
+		fmt.Fprintf(os.Stderr, "fatal error:%s\n", eris.ToString(err, true))
+		os.Exit(1)
+	}
 }

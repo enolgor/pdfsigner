@@ -26,7 +26,7 @@ permissions:
 on:
   push:
     tags:
-      - 'cli/v*'
+      - 'cli/pdfsigner/v*'
 jobs:
   create-draft-release:
     name: Create Draft Release
@@ -60,9 +60,9 @@ jobs:
       - name: Set tag and version env vars
         run: |
           echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-          echo "VERSION=${GITHUB_REF#refs/tags/cli/}" >> $GITHUB_ENV
+          echo "VERSION=${GITHUB_REF#refs/tags/cli/pdfsigner/}" >> $GITHUB_ENV
       - name: Build CLI binary
-        working-directory: ./cli
+        working-directory: ./cli/pdfsigner
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}

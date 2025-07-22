@@ -1,4 +1,4 @@
-module github.com/enolgor/pdfsigner/cli
+module github.com/enolgor/pdfsigner/cli/pdfsigner
 
 go 1.24.3
 
