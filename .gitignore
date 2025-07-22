@@ -33,5 +33,6 @@ go.work.sum
 
 *.pdf
 !examples/test.pdf
+!examples/*/output.pdf
 *.p12
 !examples/cert.p12
