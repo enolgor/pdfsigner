@@ -39,10 +39,5 @@ tasks:
     desc: 'Create a release for a module'
     cmds:
       - |
-        {{if eq OS "windows"}}
-        wsl sh -c "git tag -a '{{.MODULE}}/{{.VERSION}}' -m 'Release {{.MODULE}} {{.VERSION}}'"
-        wsl sh -c "git push origin '{{.MODULE}}/{{.VERSION}}'"
-        {{else}}
         git tag -a '{{.MODULE}}/{{.VERSION}}' -m 'Release {{.MODULE}} {{.VERSION}}'
         git push origin '{{.MODULE}}/{{.VERSION}}'
-        {{end}}
