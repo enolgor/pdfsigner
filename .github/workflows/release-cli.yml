@@ -6,6 +6,18 @@ on:
     tags:
       - 'cli/v*'
 jobs:
+  create-draft-release:
+    name: Create Draft Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Create Draft GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          gh release create "$VERSION" --title "$VERSION" --notes "Draft release for $VERSION" --draft || true
   build-and-release:
     name: Build & Release
     runs-on: ubuntu-latest
@@ -38,13 +50,6 @@ jobs:
           if [ "$GOOS" = "windows" ]; then EXT=".exe"; fi
           OUTPUT="pdfsigner-${VERSION}-${GOOS}-${GOARCH}${EXT}"
           go build -ldflags "-X main.Version=$VERSION" -o "../dist/$OUTPUT" .
-      - name: Create Draft GitHub Release (if needed)
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          gh release view "$VERSION" >/dev/null 2>&1 || \
-            gh release create "$VERSION" --title "$VERSION" --notes "Draft release for $VERSION" --draft
       - name: Upload binaries to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
