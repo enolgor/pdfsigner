@@ -39,6 +39,8 @@ import (
 
 // visible signature flags
 
+const visibleSignatureCategory = "visible signature"
+
 var VisibleFlag = &cli.BoolFlag{
 	Name:     "visible",
 	Aliases:  []string{"v"},
@@ -46,7 +48,7 @@ var VisibleFlag = &cli.BoolFlag{
 	Usage:    "draw visible signature",
 	Sources:  cli.EnvVars("VISIBLE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Visible(cmd *cli.Command) bool {
@@ -60,7 +62,7 @@ var WidthFlag = &cli.Float64Flag{
 	Usage:    "signature width in pt",
 	Sources:  cli.EnvVars("WIDTH"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Width(cmd *cli.Command) float64 {
@@ -74,7 +76,7 @@ var HeightFlag = &cli.Float64Flag{
 	Usage:    "signature height in pt",
 	Sources:  cli.EnvVars("HEIGHT"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Height(cmd *cli.Command) float64 {
@@ -88,7 +90,7 @@ var XposFlag = &cli.Float64Flag{
 	Usage:    "signature x position in pt (0 is left)",
 	Sources:  cli.EnvVars("XPOS"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Xpos(cmd *cli.Command) float64 {
@@ -102,7 +104,7 @@ var YposFlag = &cli.Float64Flag{
 	Usage:    "signature y position in pt (0 is bottom)",
 	Sources:  cli.EnvVars("YPOS"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Ypos(cmd *cli.Command) float64 {
@@ -116,7 +118,7 @@ var RotateFlag = &cli.StringFlag{
 	Usage:    "signature rotation, one of 0, 90, 180, 270",
 	Sources:  cli.EnvVars("ROTATE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "0", "90", "180", "270":
@@ -138,7 +140,7 @@ var DpiFlag = &cli.Float64Flag{
 	Usage:    "dpi",
 	Sources:  cli.EnvVars("DPI"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Dpi(cmd *cli.Command) float64 {
@@ -152,7 +154,7 @@ var TitleFlag = &cli.StringFlag{
 	Usage:    "signature title",
 	Sources:  cli.EnvVars("TITLE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 var NoTitleFlag = &cli.BoolFlag{
@@ -162,7 +164,7 @@ var NoTitleFlag = &cli.BoolFlag{
 	Usage:    "Do not include title in signature (ignores any title flag)",
 	Sources:  cli.EnvVars("NOTITLE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func Title(cmd *cli.Command) string {
@@ -179,7 +181,7 @@ var DatetimeFormatFlag = &cli.StringFlag{
 	Usage:    "datetime format (in go time format)",
 	Sources:  cli.EnvVars("DATETIMEFORMAT"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func DatetimeFormat(cmd *cli.Command) string {
@@ -193,7 +195,7 @@ var NoSubjectFlag = &cli.BoolFlag{
 	Usage:    "Do not include subject in signature (ignores any subject flag)",
 	Sources:  cli.EnvVars("NOSUBJECT"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func NoSubject(cmd *cli.Command) bool {
@@ -207,7 +209,7 @@ var NoIssuerFlag = &cli.BoolFlag{
 	Usage:    "Do not include issuer in signature (ignores any issuer flag)",
 	Sources:  cli.EnvVars("NOISSUER"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func NoIssuer(cmd *cli.Command) bool {
@@ -221,7 +223,7 @@ var NoDateFlag = &cli.BoolFlag{
 	Usage:    "Do not include date in signature (ignores any date flag)",
 	Sources:  cli.EnvVars("NODATE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func NoDate(cmd *cli.Command) bool {
@@ -235,7 +237,7 @@ var SubjectKeyFlag = &cli.StringFlag{
 	Usage:    "subject key in signature",
 	Sources:  cli.EnvVars("SUBJECTKEY"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func SubjectKey(cmd *cli.Command) string {
@@ -249,7 +251,7 @@ var IssuerKeyFlag = &cli.StringFlag{
 	Usage:    "issuer key in signature",
 	Sources:  cli.EnvVars("ISSUERKEY"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func IssuerKey(cmd *cli.Command) string {
@@ -263,7 +265,7 @@ var DateKeyFlag = &cli.StringFlag{
 	Usage:    "date key in signature",
 	Sources:  cli.EnvVars("DATEKEY"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func DateKey(cmd *cli.Command) string {
@@ -277,7 +279,7 @@ var ExtraLinesFlag = &cli.StringSliceFlag{
 	Usage:    "extra lines in signature in the format key,value. Commas can be escaped with a backslash.",
 	Sources:  cli.EnvVars("EXTRALINES"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 var re *regexp.Regexp = regexp.MustCompile(`.*?[^\\](,|$)`)
@@ -318,7 +320,7 @@ var BackgroundColorFlag = &cli.StringFlag{
 	Usage:    "background color in signature, must be a valid CSS color",
 	Sources:  cli.EnvVars("BACKGROUNDCOLOR"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func BackgroundColor(cmd *cli.Command) (rgba color.RGBA, err error) {
@@ -336,7 +338,7 @@ var BorderSizeFlag = &cli.FloatFlag{
 	Usage:    "border size in ot",
 	Sources:  cli.EnvVars("BORDERSIZE"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func BorderSize(cmd *cli.Command) float64 {
@@ -350,7 +352,7 @@ var BorderColorFlag = &cli.StringFlag{
 	Usage:    "border color in signature, must be a valid CSS color",
 	Sources:  cli.EnvVars("BORDERCOLOR"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func BorderColor(cmd *cli.Command) (rgba color.RGBA, err error) {
@@ -613,7 +615,7 @@ var TitleColorFlag = &cli.StringFlag{
 	Usage:    "title color in signature, must be a valid CSS color",
 	Sources:  cli.EnvVars("TITLECOLOR"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func TitleColor(cmd *cli.Command) (rgba color.RGBA, err error) {
@@ -631,7 +633,7 @@ var KeyColorFlag = &cli.StringFlag{
 	Usage:    "key color in signature, must be a valid CSS color",
 	Sources:  cli.EnvVars("KEYCOLOR"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func KeyColor(cmd *cli.Command) (rgba color.RGBA, err error) {
@@ -649,7 +651,7 @@ var ValueColorFlag = &cli.StringFlag{
 	Usage:    "value color in signature, must be a valid CSS color",
 	Sources:  cli.EnvVars("VALUECOLOR"),
 	Required: false,
-	Category: "visible signature",
+	Category: visibleSignatureCategory,
 }
 
 func ValueColor(cmd *cli.Command) (rgba color.RGBA, err error) {

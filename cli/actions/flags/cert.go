@@ -26,6 +26,8 @@ import "github.com/urfave/cli/v3"
 
 // certificate flags
 
+const certCategory = "certificate"
+
 var CertFlag = &cli.StringFlag{
 	Name:      "cert",
 	Aliases:   []string{"c"},
@@ -34,7 +36,7 @@ var CertFlag = &cli.StringFlag{
 	Sources:   cli.EnvVars("CERT"),
 	Required:  true,
 	TakesFile: true,
-	Category:  "certificate",
+	Category:  certCategory,
 }
 
 func Cert(cmd *cli.Command) string {
@@ -48,7 +50,7 @@ var PassphraseFlag = &cli.StringFlag{
 	Usage:    "passphrase OF the pkcs12 certificate file",
 	Sources:  cli.EnvVars("PASSPHRASE"),
 	Required: true,
-	Category: "certificate",
+	Category: certCategory,
 }
 
 func Passphrase(cmd *cli.Command) string {

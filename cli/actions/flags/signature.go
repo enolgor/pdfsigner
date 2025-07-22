@@ -33,6 +33,8 @@ import (
 
 // signature flags
 
+const signatureCategory = "signature"
+
 var SignedOutputFlag = &cli.StringFlag{
 	Name:     "out",
 	Aliases:  []string{"o"},
@@ -40,7 +42,7 @@ var SignedOutputFlag = &cli.StringFlag{
 	Usage:    "set filename and path of signed pdf, otherwise stdout is used",
 	Sources:  cli.EnvVars("OUT"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func SignedOutput(cmd *cli.Command) (io.WriteCloser, error) {
@@ -71,7 +73,7 @@ var ForceWriteFlag = &cli.BoolFlag{
 	Usage:    "force overwrite of existing file",
 	Sources:  cli.EnvVars("FORCE"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func ForceWrite(cmd *cli.Command) bool {
@@ -88,7 +90,7 @@ var DatetimeFlag *cli.TimestampFlag = &cli.TimestampFlag{
 		Layouts: []string{time.RFC3339},
 	},
 	HideDefault: true,
-	Category:    "signature",
+	Category:    signatureCategory,
 }
 
 func Datetime(cmd *cli.Command) time.Time {
@@ -102,7 +104,7 @@ var LocationFlag *cli.StringFlag = &cli.StringFlag{
 	Usage:    "datetime zone location (defaults to UTC)",
 	Sources:  cli.EnvVars("LOCATION"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func Location(cmd *cli.Command) (*time.Location, error) {
@@ -120,7 +122,7 @@ var SignatureNameFlag = &cli.StringFlag{
 	Usage:    "signature name",
 	Sources:  cli.EnvVars("SIGNATURE_NAME"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func SignatureName(cmd *cli.Command) string {
@@ -134,7 +136,7 @@ var SignatureReasonFlag = &cli.StringFlag{
 	Usage:    "signature reason",
 	Sources:  cli.EnvVars("SIGNATURE_REASON"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func SignatureReason(cmd *cli.Command) string {
@@ -148,7 +150,7 @@ var SignatureLocationFlag = &cli.StringFlag{
 	Usage:    "signature location",
 	Sources:  cli.EnvVars("SIGNATURE_LOCATION"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func SignatureLocation(cmd *cli.Command) string {
@@ -162,7 +164,7 @@ var SignatureContactFlag = &cli.StringFlag{
 	Usage:    "signature contact details",
 	Sources:  cli.EnvVars("SIGNATURE_CONTACT"),
 	Required: false,
-	Category: "signature",
+	Category: signatureCategory,
 }
 
 func SignatureContact(cmd *cli.Command) string {

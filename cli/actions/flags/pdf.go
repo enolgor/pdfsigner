@@ -34,6 +34,8 @@ import (
 
 // pdf flags
 
+const pdfCategory = "pdf"
+
 var PageFlag *cli.IntFlag = &cli.IntFlag{
 	Name:     "page",
 	Aliases:  []string{"p"},
@@ -41,7 +43,7 @@ var PageFlag *cli.IntFlag = &cli.IntFlag{
 	Usage:    "page of the pdf file (1-indexed)",
 	Sources:  cli.EnvVars("PAGE"),
 	Required: false,
-	Category: "pdf",
+	Category: pdfCategory,
 }
 
 func Page(cmd *cli.Command) int {
@@ -54,7 +56,7 @@ var AddPageFlag = &cli.BoolFlag{
 	Value:    false,
 	Usage:    "add a page to the end of the pdf file (ignores page flag)",
 	Sources:  cli.EnvVars("ADD_PAGE"),
-	Category: "pdf",
+	Category: pdfCategory,
 }
 
 func AddPage(cmd *cli.Command) bool {
@@ -68,7 +70,7 @@ var PageSizeFlag = &cli.StringFlag{
 	Usage:    "page size if add-page is set",
 	Sources:  cli.EnvVars("PAGE_SIZE"),
 	Required: false,
-	Category: "pdf",
+	Category: pdfCategory,
 }
 
 func PageSize(cmd *cli.Command) (*config.Dim, error) {
