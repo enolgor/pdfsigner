@@ -52,7 +52,7 @@ var VisibleFlag = &cli.BoolFlag{
 }
 
 func Visible(cmd *cli.Command) bool {
-	return cmd.Bool("visible")
+	return cmd.Bool(VisibleFlag.Name)
 }
 
 var WidthFlag = &cli.Float64Flag{
@@ -66,7 +66,7 @@ var WidthFlag = &cli.Float64Flag{
 }
 
 func Width(cmd *cli.Command) float64 {
-	return cmd.Float64("width")
+	return cmd.Float64(WidthFlag.Name)
 }
 
 var HeightFlag = &cli.Float64Flag{
@@ -80,7 +80,7 @@ var HeightFlag = &cli.Float64Flag{
 }
 
 func Height(cmd *cli.Command) float64 {
-	return cmd.Float64("height")
+	return cmd.Float64(HeightFlag.Name)
 }
 
 var XposFlag = &cli.Float64Flag{
@@ -94,7 +94,7 @@ var XposFlag = &cli.Float64Flag{
 }
 
 func Xpos(cmd *cli.Command) float64 {
-	return cmd.Float64("xpos")
+	return cmd.Float64(XposFlag.Name)
 }
 
 var YposFlag = &cli.Float64Flag{
@@ -108,7 +108,7 @@ var YposFlag = &cli.Float64Flag{
 }
 
 func Ypos(cmd *cli.Command) float64 {
-	return cmd.Float64("ypos")
+	return cmd.Float64(YposFlag.Name)
 }
 
 var RotateFlag = &cli.StringFlag{
@@ -130,7 +130,7 @@ var RotateFlag = &cli.StringFlag{
 }
 
 func Rotate(cmd *cli.Command) config.Rotation {
-	return config.Rotation(cmd.String("rotate"))
+	return config.Rotation(cmd.String(RotateFlag.Name))
 }
 
 var DpiFlag = &cli.Float64Flag{
@@ -144,7 +144,7 @@ var DpiFlag = &cli.Float64Flag{
 }
 
 func Dpi(cmd *cli.Command) float64 {
-	return cmd.Float64("dpi")
+	return cmd.Float64(DpiFlag.Name)
 }
 
 var TitleFlag = &cli.StringFlag{
@@ -168,10 +168,10 @@ var NoTitleFlag = &cli.BoolFlag{
 }
 
 func Title(cmd *cli.Command) string {
-	if cmd.Bool("no-title") {
+	if cmd.Bool(NoTitleFlag.Name) {
 		return ""
 	}
-	return cmd.String("title")
+	return cmd.String(TitleFlag.Name)
 }
 
 var DatetimeFormatFlag = &cli.StringFlag{
@@ -185,7 +185,7 @@ var DatetimeFormatFlag = &cli.StringFlag{
 }
 
 func DatetimeFormat(cmd *cli.Command) string {
-	return cmd.String("datetime-format")
+	return cmd.String(DatetimeFormatFlag.Name)
 }
 
 var NoSubjectFlag = &cli.BoolFlag{
@@ -199,7 +199,7 @@ var NoSubjectFlag = &cli.BoolFlag{
 }
 
 func NoSubject(cmd *cli.Command) bool {
-	return cmd.Bool("no-subject")
+	return cmd.Bool(NoSubjectFlag.Name)
 }
 
 var NoIssuerFlag = &cli.BoolFlag{
@@ -213,7 +213,7 @@ var NoIssuerFlag = &cli.BoolFlag{
 }
 
 func NoIssuer(cmd *cli.Command) bool {
-	return cmd.Bool("no-issuer")
+	return cmd.Bool(NoIssuerFlag.Name)
 }
 
 var NoDateFlag = &cli.BoolFlag{
@@ -227,7 +227,7 @@ var NoDateFlag = &cli.BoolFlag{
 }
 
 func NoDate(cmd *cli.Command) bool {
-	return cmd.Bool("no-date")
+	return cmd.Bool(NoDateFlag.Name)
 }
 
 var SubjectKeyFlag = &cli.StringFlag{
@@ -241,7 +241,7 @@ var SubjectKeyFlag = &cli.StringFlag{
 }
 
 func SubjectKey(cmd *cli.Command) string {
-	return cmd.String("subject-key")
+	return cmd.String(SubjectKeyFlag.Name)
 }
 
 var IssuerKeyFlag = &cli.StringFlag{
@@ -255,7 +255,7 @@ var IssuerKeyFlag = &cli.StringFlag{
 }
 
 func IssuerKey(cmd *cli.Command) string {
-	return cmd.String("issuer-key")
+	return cmd.String(IssuerKeyFlag.Name)
 }
 
 var DateKeyFlag = &cli.StringFlag{
@@ -269,7 +269,7 @@ var DateKeyFlag = &cli.StringFlag{
 }
 
 func DateKey(cmd *cli.Command) string {
-	return cmd.String("date-key")
+	return cmd.String(DateKeyFlag.Name)
 }
 
 var ExtraLinesFlag = &cli.StringSliceFlag{
@@ -292,13 +292,13 @@ var cleanStr func(str string, last bool) string = func(str string, last bool) st
 }
 
 func ExtraLines(cmd *cli.Command) ([]config.TextLine, error) {
-	extraLinesValue := cmd.StringSlice("extra-lines")
+	extraLinesValue := cmd.StringSlice(ExtraLinesFlag.Name)
 	if extraLinesValue == nil {
 		return make([]config.TextLine, 0), nil
 	}
 	extraLines := make([]config.TextLine, len(extraLinesValue))
 
-	for i, line := range cmd.StringSlice("extra-lines") {
+	for i, line := range extraLinesValue {
 		if !strings.Contains(line, ",") {
 			extraLines[i] = config.TextLine{Key: "", Value: cleanStr(line, true)}
 			continue
@@ -324,7 +324,7 @@ var BackgroundColorFlag = &cli.StringFlag{
 }
 
 func BackgroundColor(cmd *cli.Command) (rgba color.RGBA, err error) {
-	if rgba, err = parseColor(cmd.String("background-color")); err != nil {
+	if rgba, err = parseColor(cmd.String(BackgroundColorFlag.Name)); err != nil {
 		err = eris.Wrap(err, "error parsing background color")
 		return
 	}
@@ -342,7 +342,7 @@ var BorderSizeFlag = &cli.FloatFlag{
 }
 
 func BorderSize(cmd *cli.Command) float64 {
-	return cmd.Float64("border-size")
+	return cmd.Float64(BorderSizeFlag.Name)
 }
 
 var BorderColorFlag = &cli.StringFlag{
@@ -356,7 +356,7 @@ var BorderColorFlag = &cli.StringFlag{
 }
 
 func BorderColor(cmd *cli.Command) (rgba color.RGBA, err error) {
-	if rgba, err = parseColor(cmd.String("border-color")); err != nil {
+	if rgba, err = parseColor(cmd.String(BorderColorFlag.Name)); err != nil {
 		err = eris.Wrap(err, "error parsing border color")
 		return
 	}
@@ -370,21 +370,22 @@ var LogoFlag = &cli.StringFlag{
 	Usage:    "set logo path to use in signature (png only)",
 	Sources:  cli.EnvVars("LOGO"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func Logo(cmd *cli.Command) (image.Image, error) {
 	if !LogoFlag.IsSet() {
 		return nil, nil
 	}
-	f, err := os.Open(cmd.String("logo"))
+	logoPath := cmd.String(LogoFlag.Name)
+	f, err := os.Open(logoPath)
 	if err != nil {
-		return nil, eris.Wrapf(err, "failed to read file %s", cmd.String("logo"))
+		return nil, eris.Wrapf(err, "failed to read file %s", logoPath)
 	}
 	defer f.Close()
 	img, err := png.Decode(f)
 	if err != nil {
-		return nil, eris.Wrapf(err, "failed to decode png file %s", cmd.String("logo"))
+		return nil, eris.Wrapf(err, "failed to decode png file %s", logoPath)
 	}
 	return img, nil
 }
@@ -396,11 +397,11 @@ var LogoGrayscaleFlag = &cli.BoolFlag{
 	Usage:    "convert logo to grayscale",
 	Sources:  cli.EnvVars("LOGOGRAYSCALE"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func LogoGrayscale(cmd *cli.Command) bool {
-	return cmd.Bool("logo-grayscale")
+	return cmd.Bool(LogoGrayscaleFlag.Name)
 }
 
 var LogoOpacityFlag = &cli.Float64Flag{
@@ -410,11 +411,11 @@ var LogoOpacityFlag = &cli.Float64Flag{
 	Usage:    "set logo opacity (0.0 to 1.0)",
 	Sources:  cli.EnvVars("LOGOOPACITY"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func LogoOpacity(cmd *cli.Command) float64 {
-	return cmd.Float64("logo-opacity")
+	return cmd.Float64(LogoOpacityFlag.Name)
 }
 
 var LogoAlignmentFlag = &cli.StringFlag{
@@ -424,7 +425,7 @@ var LogoAlignmentFlag = &cli.StringFlag{
 	Usage:    "logo alignment, one of left, center, right",
 	Sources:  cli.EnvVars("LOGOALIGNMENT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "left", "center", "right":
@@ -436,7 +437,7 @@ var LogoAlignmentFlag = &cli.StringFlag{
 }
 
 func LogoAlignment(cmd *cli.Command) config.Alignment {
-	return config.Alignment(cmd.String("logo-alignment"))
+	return config.Alignment(cmd.String(LogoAlignmentFlag.Name))
 }
 
 var TitleAlignmentFlag = &cli.StringFlag{
@@ -446,7 +447,7 @@ var TitleAlignmentFlag = &cli.StringFlag{
 	Usage:    "title alignment, one of left, center, right",
 	Sources:  cli.EnvVars("TITLEALIGNMENT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "left", "center", "right":
@@ -457,6 +458,10 @@ var TitleAlignmentFlag = &cli.StringFlag{
 	},
 }
 
+func TitleAlignment(cmd *cli.Command) config.Alignment {
+	return config.Alignment(cmd.String(TitleAlignmentFlag.Name))
+}
+
 var NoEmptyLineAfterTitleFlag = &cli.BoolFlag{
 	Name:     "no-empty-line-after-title",
 	Aliases:  []string{"nelt"},
@@ -464,15 +469,11 @@ var NoEmptyLineAfterTitleFlag = &cli.BoolFlag{
 	Usage:    "Do not add an empty line after the title",
 	Sources:  cli.EnvVars("NOEMPTYLINEAFTERTITLE"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func NoEmptyLineAfterTitle(cmd *cli.Command) bool {
-	return cmd.Bool("no-empty-line-after-title")
-}
-
-func TitleAlignment(cmd *cli.Command) config.Alignment {
-	return config.Alignment(cmd.String("title-alignment"))
+	return cmd.Bool(NoEmptyLineAfterTitleFlag.Name)
 }
 
 var LineAlignmentFlag = &cli.StringFlag{
@@ -482,7 +483,7 @@ var LineAlignmentFlag = &cli.StringFlag{
 	Usage:    "line alignment, one of left, center, right. Overrides key and value alignment.",
 	Sources:  cli.EnvVars("LINEALIGNMENT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "left", "center", "right":
@@ -494,7 +495,7 @@ var LineAlignmentFlag = &cli.StringFlag{
 }
 
 func LineAlignment(cmd *cli.Command) config.Alignment {
-	return config.Alignment(cmd.String("line-alignment"))
+	return config.Alignment(cmd.String(LineAlignmentFlag.Name))
 }
 
 var KeyAlignmentFlag = &cli.StringFlag{
@@ -504,7 +505,7 @@ var KeyAlignmentFlag = &cli.StringFlag{
 	Usage:    "key column alignment, one of left, center, right",
 	Sources:  cli.EnvVars("KEYALIGNMENT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "left", "center", "right":
@@ -516,7 +517,7 @@ var KeyAlignmentFlag = &cli.StringFlag{
 }
 
 func KeyAlignment(cmd *cli.Command) config.Alignment {
-	return config.Alignment(cmd.String("key-alignment"))
+	return config.Alignment(cmd.String(KeyAlignmentFlag.Name))
 }
 
 var ValueAlignmentFlag = &cli.StringFlag{
@@ -526,7 +527,7 @@ var ValueAlignmentFlag = &cli.StringFlag{
 	Usage:    "value column alignment, one of left, center, right",
 	Sources:  cli.EnvVars("VALUEALIGNMENT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 	Validator: func(v string) error {
 		switch v {
 		case "left", "center", "right":
@@ -538,7 +539,7 @@ var ValueAlignmentFlag = &cli.StringFlag{
 }
 
 func ValueAlignment(cmd *cli.Command) config.Alignment {
-	return config.Alignment(cmd.String("value-alignment"))
+	return config.Alignment(cmd.String(ValueAlignmentFlag.Name))
 }
 
 var LoadFontFlag = &cli.StringSliceFlag{
@@ -548,14 +549,14 @@ var LoadFontFlag = &cli.StringSliceFlag{
 	Usage:    "path to custom ttf font file",
 	Sources:  cli.EnvVars("LOADFONT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func LoadFonts(cmd *cli.Command) error {
-	if cmd.StringSlice("load-font") == nil {
+	if cmd.StringSlice(LoadFontFlag.Name) == nil {
 		return nil
 	}
-	for _, fontPath := range cmd.StringSlice("load-font") {
+	for _, fontPath := range cmd.StringSlice(LoadFontFlag.Name) {
 		if fontPath == "" {
 			continue
 		}
@@ -573,11 +574,11 @@ var TitleFontFlag = &cli.StringFlag{
 	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
 	Sources:  cli.EnvVars("TITLEFONT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func TitleFont(cmd *cli.Command) string {
-	return cmd.String("title-font")
+	return cmd.String(TitleFontFlag.Name)
 }
 
 var KeyFontFlag = &cli.StringFlag{
@@ -587,11 +588,11 @@ var KeyFontFlag = &cli.StringFlag{
 	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
 	Sources:  cli.EnvVars("KEYFONT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func KeyFont(cmd *cli.Command) string {
-	return cmd.String("key-font")
+	return cmd.String(KeyFontFlag.Name)
 }
 
 var ValueFontFlag = &cli.StringFlag{
@@ -601,11 +602,11 @@ var ValueFontFlag = &cli.StringFlag{
 	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
 	Sources:  cli.EnvVars("VALUEFONT"),
 	Required: false,
-	Category: "signature",
+	Category: visibleSignatureCategory,
 }
 
 func ValueFont(cmd *cli.Command) string {
-	return cmd.String("value-font")
+	return cmd.String(ValueFontFlag.Name)
 }
 
 var TitleColorFlag = &cli.StringFlag{
@@ -619,7 +620,7 @@ var TitleColorFlag = &cli.StringFlag{
 }
 
 func TitleColor(cmd *cli.Command) (rgba color.RGBA, err error) {
-	if rgba, err = parseColor(cmd.String("title-color")); err != nil {
+	if rgba, err = parseColor(cmd.String(TitleColorFlag.Name)); err != nil {
 		err = eris.Wrap(err, "error parsing title color")
 		return
 	}
@@ -637,7 +638,7 @@ var KeyColorFlag = &cli.StringFlag{
 }
 
 func KeyColor(cmd *cli.Command) (rgba color.RGBA, err error) {
-	if rgba, err = parseColor(cmd.String("key-color")); err != nil {
+	if rgba, err = parseColor(cmd.String(KeyColorFlag.Name)); err != nil {
 		err = eris.Wrap(err, "error parsing key color")
 		return
 	}
@@ -655,7 +656,7 @@ var ValueColorFlag = &cli.StringFlag{
 }
 
 func ValueColor(cmd *cli.Command) (rgba color.RGBA, err error) {
-	if rgba, err = parseColor(cmd.String("value-color")); err != nil {
+	if rgba, err = parseColor(cmd.String(ValueColorFlag.Name)); err != nil {
 		err = eris.Wrap(err, "error parsing value color")
 		return
 	}

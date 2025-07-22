@@ -47,7 +47,7 @@ var PageFlag *cli.IntFlag = &cli.IntFlag{
 }
 
 func Page(cmd *cli.Command) int {
-	return cmd.Int("page")
+	return cmd.Int(PageFlag.Name)
 }
 
 var AddPageFlag = &cli.BoolFlag{
@@ -60,7 +60,7 @@ var AddPageFlag = &cli.BoolFlag{
 }
 
 func AddPage(cmd *cli.Command) bool {
-	return cmd.Bool("add-page")
+	return cmd.Bool(AddPageFlag.Name)
 }
 
 var PageSizeFlag = &cli.StringFlag{
@@ -74,7 +74,7 @@ var PageSizeFlag = &cli.StringFlag{
 }
 
 func PageSize(cmd *cli.Command) (*config.Dim, error) {
-	pageSize := cmd.String("page-size")
+	pageSize := cmd.String(PageSizeFlag.Name)
 	parts := strings.Split(pageSize, ",")
 	var width, height float64
 	var errs, err error

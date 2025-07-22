@@ -40,7 +40,7 @@ var CertFlag = &cli.StringFlag{
 }
 
 func Cert(cmd *cli.Command) string {
-	return cmd.String("cert")
+	return cmd.String(CertFlag.Name)
 }
 
 var PassphraseFlag = &cli.StringFlag{
@@ -54,5 +54,5 @@ var PassphraseFlag = &cli.StringFlag{
 }
 
 func Passphrase(cmd *cli.Command) string {
-	return cmd.String("passphrase")
+	return cmd.String(PassphraseFlag.Name)
 }

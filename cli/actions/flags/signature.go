@@ -46,7 +46,7 @@ var SignedOutputFlag = &cli.StringFlag{
 }
 
 func SignedOutput(cmd *cli.Command) (io.WriteCloser, error) {
-	path := cmd.String("out")
+	path := cmd.String(SignedOutputFlag.Name)
 	if path == "" {
 		return os.Stdout, nil
 	}
@@ -77,7 +77,7 @@ var ForceWriteFlag = &cli.BoolFlag{
 }
 
 func ForceWrite(cmd *cli.Command) bool {
-	return cmd.Bool("force")
+	return cmd.Bool(ForceWriteFlag.Name)
 }
 
 var DatetimeFlag *cli.TimestampFlag = &cli.TimestampFlag{
@@ -94,7 +94,7 @@ var DatetimeFlag *cli.TimestampFlag = &cli.TimestampFlag{
 }
 
 func Datetime(cmd *cli.Command) time.Time {
-	return cmd.Timestamp("datetime")
+	return cmd.Timestamp(DatetimeFlag.Name)
 }
 
 var LocationFlag *cli.StringFlag = &cli.StringFlag{
@@ -108,9 +108,9 @@ var LocationFlag *cli.StringFlag = &cli.StringFlag{
 }
 
 func Location(cmd *cli.Command) (*time.Location, error) {
-	loc, err := time.LoadLocation(cmd.String("location"))
+	loc, err := time.LoadLocation(cmd.String(LocationFlag.Name))
 	if err != nil {
-		return nil, eris.Wrapf(err, "location %s not found", cmd.String("location"))
+		return nil, eris.Wrapf(err, "location %s not found", cmd.String(LocationFlag.Name))
 	}
 	return loc, nil
 }
@@ -126,7 +126,7 @@ var SignatureNameFlag = &cli.StringFlag{
 }
 
 func SignatureName(cmd *cli.Command) string {
-	return cmd.String("signature-name")
+	return cmd.String(SignatureNameFlag.Name)
 }
 
 var SignatureReasonFlag = &cli.StringFlag{
@@ -140,7 +140,7 @@ var SignatureReasonFlag = &cli.StringFlag{
 }
 
 func SignatureReason(cmd *cli.Command) string {
-	return cmd.String("signature-reason")
+	return cmd.String(SignatureReasonFlag.Name)
 }
 
 var SignatureLocationFlag = &cli.StringFlag{
@@ -154,7 +154,7 @@ var SignatureLocationFlag = &cli.StringFlag{
 }
 
 func SignatureLocation(cmd *cli.Command) string {
-	return cmd.String("signature-location")
+	return cmd.String(SignatureLocationFlag.Name)
 }
 
 var SignatureContactFlag = &cli.StringFlag{
@@ -168,5 +168,5 @@ var SignatureContactFlag = &cli.StringFlag{
 }
 
 func SignatureContact(cmd *cli.Command) string {
-	return cmd.String("signature-contact")
+	return cmd.String(SignatureContactFlag.Name)
 }
