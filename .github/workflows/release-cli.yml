@@ -73,6 +73,7 @@ jobs:
           OUTPUT="pdfsigner-${VERSION}-${GOOS}-${GOARCH}${EXT}"
           go build -ldflags "-X main.Version=$VERSION" -o "../dist/$OUTPUT" .
       - name: Upload binaries to release
+        working-directory: ./cli
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
