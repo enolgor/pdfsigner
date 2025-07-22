@@ -33,30 +33,30 @@ import (
 func getSystemFontDirectories() []string {
 	switch runtime.GOOS {
 	case "windows":
-		return windows_fontDirectories()
+		return windowsFontDirectories()
 	case "linux":
-		return linux_fontDirectories()
+		return linuxFontDirectories()
 	case "darwin":
-		return darwin_fontDirectories()
+		return darwinFontDirectories()
 	default:
 		return []string{}
 	}
 }
 
-func windows_fontDirectories() []string {
+func windowsFontDirectories() []string {
 	return []string{
 		filepath.Join(os.Getenv("windir"), "Fonts"),
 		filepath.Join(os.Getenv("localappdata"), "Microsoft", "Windows", "Fonts"),
 	}
 }
 
-func linux_fontDirectories() []string {
-	directories := linux_userFontDirs()
-	directories = append(directories, linux_systemFontDirs()...)
+func linuxFontDirectories() []string {
+	directories := linuxUserFontDirs()
+	directories = append(directories, linuxSystemFontDirs()...)
 	return directories
 }
 
-func darwin_fontDirectories() []string {
+func darwinFontDirectories() []string {
 	return []string{
 		expandUser("~/Library/Fonts/"),
 		"/Library/Fonts/",
@@ -64,14 +64,14 @@ func darwin_fontDirectories() []string {
 	}
 }
 
-func linux_userFontDirs() (paths []string) {
+func linuxUserFontDirs() (paths []string) {
 	if dataPath := os.Getenv("XDG_DATA_HOME"); dataPath != "" {
 		return []string{expandUser("~/.fonts/"), filepath.Join(expandUser(dataPath), "fonts")}
 	}
 	return []string{expandUser("~/.fonts/"), expandUser("~/.local/share/fonts/")}
 }
 
-func linux_systemFontDirs() (paths []string) {
+func linuxSystemFontDirs() (paths []string) {
 	if dataPaths := os.Getenv("XDG_DATA_DIRS"); dataPaths != "" {
 		for _, dataPath := range filepath.SplitList(dataPaths) {
 			paths = append(paths, filepath.Join(expandUser(dataPath), "fonts"))
