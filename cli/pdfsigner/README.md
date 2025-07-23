@@ -294,6 +294,8 @@ pdfsigner sign \
 <td>
 
 ```sh
+TITLE="Signed by {{.Subject}} on {{.Date}}. \
+Certificate issued by {{.Issuer}}."
 pdfsigner sign \
   --cert cert.p12 \
   --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
@@ -304,7 +306,6 @@ pdfsigner sign \
   --no-empty-line-after-title \
   --background-color "transparent" \
   --title-color "rgba(150, 150, 150, 130)" \
-  --title "Signed by {{.Subject}} on {{.Date}}. Certificate issued by {{.Issuer}}." \
   test.pdf
 ```
 
