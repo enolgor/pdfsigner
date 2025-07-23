@@ -274,13 +274,13 @@ pdfsigner sign \
 </td>
 <td>
 
-  <a href="../../examples/sidetext/output.pdf">
+  <a href="../../examples/default/output.pdf">
     <img
-      src="../../examples/sidetext/output.png" 
+      src="../../examples/default/output.png" 
       width="50%"
-      title="Side text example"
-      alt="Side text example"
-      border="2"
+      title="Default example"
+      alt="Default example"
+      style="border: 1px solid black"
     />
   </a>
 
