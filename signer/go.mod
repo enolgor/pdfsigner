@@ -9,7 +9,7 @@ require (
 	github.com/pdfcpu/pdfcpu v0.11.0
 	github.com/rotisserie/eris v0.5.4
 	golang.org/x/image v0.29.0
-	software.sslmate.com/src/go-pkcs12 v0.5.0
+	software.sslmate.com/src/go-pkcs12 v0.6.0
 )
 
 require (
