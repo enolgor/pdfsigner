@@ -280,7 +280,6 @@ pdfsigner sign \
       width="75%"
       title="Default example"
       alt="Default example"
-      style="border: 1px solid black"
     />
   </a>
 
@@ -316,9 +315,40 @@ pdfsigner sign \
     <img
       src="../../examples/sidetext/output.png" 
       width="75%"
-      title="Default example"
-      alt="Default example"
-      style="border: 1px solid black"
+      title="Side text example"
+      alt="Side text example"
+    />
+  </a>
+
+</td>
+</table>
+
+### Custom fonts
+
+<table>
+<tr>
+<td>
+
+```sh
+pdfsigner sign \
+  -c cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  -o output.pdf -p 1 -f -v -w 300 -x 150 -y 225 \
+  --rs 0 --nd --ni --nt --sk "Signed by: " \
+  --bc "rgba(230,230,230,255)" \
+  --lf fonts/Corinthia-Bold.ttf --lf fonts/Corinthia-Regular.ttf \
+  --kf "Corinthia-Bold" --vf "Corinthia-Regular" \
+  test.pdf
+```
+
+</td>
+<td>
+
+  <a href="../../examples/customfonts/output.pdf">
+    <img
+      src="../../examples/customfonts/output.png" 
+      width="75%"
+      title="Custom fonts example"
+      alt="Custom fonts example"
     />
   </a>
 
