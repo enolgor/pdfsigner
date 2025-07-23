@@ -254,6 +254,23 @@ LOADFONT=<path-to-font> pdfsigner list-fonts
 
 ## 📚 Examples
 
+### Default signature stamp, added to last page
+```sh
+pdfsigner sign \
+  --cert cert.p12 --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  --out output.pdf --add-page --force --visible \
+  test.pdf
+```
+[
+<img
+    src="../../examples/sidetext/output.png" 
+    width=30%
+    title="Side text example"
+    alt="Side text example"
+    style="border: 2px solid black"
+/>
+](../../examples/sidetext/output.pdf)
+
 ### Side text single line, transparent background
 ```sh
 pdfsigner sign \
@@ -266,14 +283,8 @@ pdfsigner sign \
   --title "Signed by {{.Subject}} on {{.Date}}. Certificate issued by {{.Issuer}}." \
   test.pdf
 ```
-[
-<img
-    src="../../examples/sidetext/output.png" 
-    width=70%
-    title="Side text example"
-    alt="Side text example"
-/>
-](../../examples/sidetext/output.pdf)
+
+
 
 ----
 This project is licensed under the MIT License.  
