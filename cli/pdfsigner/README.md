@@ -254,7 +254,26 @@ LOADFONT=<path-to-font> pdfsigner list-fonts
 
 ## 📚 Examples
 
-TODO / Work in progress
+### Side text single line, transparent background
+```sh
+pdfsigner sign \
+  --cert cert.p12 --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  --out output.pdf --page 1 --force --visible \
+  --width 750 --rotate 270 --xpos 10 --ypos 50 \
+  --datetime-format "02 Jan 2006 at 15:04:05" --border-size 0 \
+  --no-date --no-issuer --no-subject --no-empty-line-after-title \
+  --background-color "transparent" --title-color "rgba(150, 150, 150, 130)" \
+  --title "Signed by {{.Subject}} on {{.Date}}. Certificate issued by {{.Issuer}}." \
+  test.pdf
+```
+[
+<img
+    src="../../examples/sidetext/output.png" 
+    width=70%
+    title="Side text example"
+    alt="Side text example"
+/>
+](../../examples/sidetext/output.pdf)
 
 ----
 This project is licensed under the MIT License.  
