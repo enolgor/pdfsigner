@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/cli" # Location of package manifests
+    directory: "/cli/pdfsigner" # Location of package manifests
     schedule:
       interval: "daily"
   - package-ecosystem: "gomod" # See documentation for possible values
