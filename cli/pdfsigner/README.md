@@ -210,9 +210,7 @@ Title line and the `value` of each extra line admit [golang-style templates](htt
 
 **Usage examples:**
 
-```sh
-TODO / Work in progress
-```
+See [Examples](#-examples) section below.
 
 ---
 
