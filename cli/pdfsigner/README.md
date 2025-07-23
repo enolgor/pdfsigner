@@ -273,17 +273,19 @@ pdfsigner sign \
 
 </td>
 <td>
-<a href="../../examples/sidetext/output.pdf">
-  <img
-    src="../../examples/sidetext/output.png" 
-    width=50%
-    title="Side text example"
-    alt="Side text example"
-    style="border: 2px solid black"
-/>
-</a>
+
+  <a href="../../examples/sidetext/output.pdf">
+    <img
+      src="../../examples/sidetext/output.png" 
+      width="50%"
+      title="Side text example"
+      alt="Side text example"
+      border="2"
+    />
+  </a>
 
 </td>
+</table>
 
 ### Side text single line, transparent background
 ```sh
