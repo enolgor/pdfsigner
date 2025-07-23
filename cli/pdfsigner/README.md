@@ -255,23 +255,35 @@ LOADFONT=<path-to-font> pdfsigner list-fonts
 ## 📚 Examples
 
 ### Default signature stamp, added to last page
+
+<table>
+<tr>
+<td>
+
 ```sh
 pdfsigner sign \
-  --cert cert.p12 --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  --out output.pdf --add-page --force --visible \
+  --cert cert.p12 \
+  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  --out output.pdf \
+  --add-page \
+  --force \
+  --visible \
   test.pdf
 ```
-<kbd>
-[
-<img
+
+</td>
+<td>
+<a href="../../examples/sidetext/output.pdf">
+  <img
     src="../../examples/sidetext/output.png" 
-    width=30%
+    width=50%
     title="Side text example"
     alt="Side text example"
     style="border: 2px solid black"
 />
-](../../examples/sidetext/output.pdf)
-</kbd>
+</a>
+
+</td>
 
 ### Side text single line, transparent background
 ```sh
