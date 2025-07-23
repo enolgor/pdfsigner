@@ -1,3 +1,7 @@
-{{ range . }}
-- [{{.Name}}]({{.LicenseURL}}) {{.LicenseName}}
-{{ end }}
+# Third Party Licenses
+
+| Source | License |
+| --- | --- |
+{{- range . }}
+| [{{.Name}}]({{.LicenseURL}}) | {{.LicenseName}} |
+{{- end }}

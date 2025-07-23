@@ -567,11 +567,13 @@ func LoadFonts(cmd *cli.Command) error {
 	return nil
 }
 
+const fontFlagUsage = "ttf font file name, without extension (use list-fonts to see available fonts)"
+
 var TitleFontFlag = &cli.StringFlag{
 	Name:     "title-font",
 	Aliases:  []string{"tf"},
 	Value:    "RobotoMono-Bold",
-	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
+	Usage:    fontFlagUsage,
 	Sources:  cli.EnvVars("TITLEFONT"),
 	Required: false,
 	Category: visibleSignatureCategory,
@@ -585,7 +587,7 @@ var KeyFontFlag = &cli.StringFlag{
 	Name:     "key-font",
 	Aliases:  []string{"kf"},
 	Value:    "RobotoMono-SemiBold",
-	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
+	Usage:    fontFlagUsage,
 	Sources:  cli.EnvVars("KEYFONT"),
 	Required: false,
 	Category: visibleSignatureCategory,
@@ -599,7 +601,7 @@ var ValueFontFlag = &cli.StringFlag{
 	Name:     "value-font",
 	Aliases:  []string{"vf"},
 	Value:    "RobotoMono-Regular",
-	Usage:    "ttf font file name, without extension (use list-fonts to see available fonts)",
+	Usage:    fontFlagUsage,
 	Sources:  cli.EnvVars("VALUEFONT"),
 	Required: false,
 	Category: visibleSignatureCategory,

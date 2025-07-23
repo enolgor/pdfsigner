@@ -73,7 +73,8 @@ func getMetadata(cmd *cli.Command) *signer.SignatureMetadata {
 }
 
 func getConfiguration(cmd *cli.Command, pdfReader *bytes.Reader) (*config.SignatureConfiguration, error) {
-	if err := flags.LoadFonts(cmd); err != nil {
+	var err error
+	if err = flags.LoadFonts(cmd); err != nil {
 		return nil, err
 	}
 	options := []config.SignatureOption{}
@@ -82,26 +83,8 @@ func getConfiguration(cmd *cli.Command, pdfReader *bytes.Reader) (*config.Signat
 	if flags.HeightFlag.IsSet() && !flags.WidthFlag.IsSet() {
 		options = append(options, config.WidthPt(0))
 	}
-	if flags.AddPage(cmd) {
-		size, err := flags.PageSize(cmd)
-		if err != nil {
-			return nil, err
-		}
-		options = append(options, config.AddPage(size))
-		options = append(options, config.PosStrict(flags.XposFlag.IsSet() || flags.YposFlag.IsSet()))
-	} else {
-		page := flags.Page(cmd)
-		if flags.PageFlag.IsSet() {
-			numpages, err := signer.GetPageCount(pdfReader)
-			if err != nil {
-				return nil, err
-			}
-			if page < 1 || page > numpages {
-				return nil, eris.Errorf("invalid page number %d", page)
-			}
-		}
-		options = append(options, config.Page(page))
-		options = append(options, config.AddPage(nil))
+	if options, err = applyPageConfiguration(options, cmd, pdfReader); err != nil {
+		return nil, err
 	}
 	options = append(options, config.PosXPt(flags.Xpos(cmd)))
 	options = append(options, config.PosYPt(flags.Ypos(cmd)))
@@ -144,6 +127,31 @@ func getConfiguration(cmd *cli.Command, pdfReader *bytes.Reader) (*config.Signat
 		return nil, err
 	}
 	return config.New(options...), err
+}
+
+func applyPageConfiguration(options []config.SignatureOption, cmd *cli.Command, pdfReader *bytes.Reader) ([]config.SignatureOption, error) {
+	if flags.AddPage(cmd) {
+		size, err := flags.PageSize(cmd)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, config.AddPage(size))
+		options = append(options, config.PosStrict(flags.XposFlag.IsSet() || flags.YposFlag.IsSet()))
+	} else {
+		page := flags.Page(cmd)
+		if flags.PageFlag.IsSet() {
+			numpages, err := signer.GetPageCount(pdfReader)
+			if err != nil {
+				return nil, err
+			}
+			if page < 1 || page > numpages {
+				return nil, eris.Errorf("invalid page number %d", page)
+			}
+		}
+		options = append(options, config.Page(page))
+		options = append(options, config.AddPage(nil))
+	}
+	return options, nil
 }
 
 var colorFlags = []struct {
