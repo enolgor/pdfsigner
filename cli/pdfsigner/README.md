@@ -261,6 +261,7 @@ pdfsigner sign \
   --out output.pdf --add-page --force --visible \
   test.pdf
 ```
+<kbd>
 [
 <img
     src="../../examples/sidetext/output.png" 
@@ -270,6 +271,7 @@ pdfsigner sign \
     style="border: 2px solid black"
 />
 ](../../examples/sidetext/output.pdf)
+</kbd>
 
 ### Side text single line, transparent background
 ```sh
