@@ -170,3 +170,42 @@ var SignatureContactFlag = &cli.StringFlag{
 func SignatureContact(cmd *cli.Command) string {
 	return cmd.String(SignatureContactFlag.Name)
 }
+
+var TsaURLFlag = &cli.StringFlag{
+	Name:     "tsa-url",
+	Value:    "",
+	Usage:    "URL of the timestamp authority (TSA) to use for signing",
+	Sources:  cli.EnvVars("TSA_URL"),
+	Required: false,
+	Category: signatureCategory,
+}
+
+func TsaURL(cmd *cli.Command) string {
+	return cmd.String(TsaURLFlag.Name)
+}
+
+var TsaUserFlag = &cli.StringFlag{
+	Name:     "tsa-user",
+	Value:    "",
+	Usage:    "Username for the TSA, if required",
+	Sources:  cli.EnvVars("TSA_USER"),
+	Required: false,
+	Category: signatureCategory,
+}
+
+func TsaUser(cmd *cli.Command) string {
+	return cmd.String(TsaUserFlag.Name)
+}
+
+var TsaPasswordFlag = &cli.StringFlag{
+	Name:     "tsa-password",
+	Value:    "",
+	Usage:    "Password for the TSA, if required",
+	Sources:  cli.EnvVars("TSA_PASSWORD"),
+	Required: false,
+	Category: signatureCategory,
+}
+
+func TsaPassword(cmd *cli.Command) string {
+	return cmd.String(TsaPasswordFlag.Name)
+}

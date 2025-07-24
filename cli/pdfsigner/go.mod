@@ -3,7 +3,7 @@ module github.com/enolgor/pdfsigner/cli/pdfsigner
 go 1.24.3
 
 require (
-	github.com/enolgor/pdfsigner/signer v1.0.0
+	github.com/enolgor/pdfsigner/signer v1.0.1
 	github.com/mazznoer/csscolorparser v0.1.6
 	github.com/rotisserie/eris v0.5.4
 	github.com/urfave/cli/v3 v3.3.8
@@ -28,5 +28,5 @@ require (
 	golang.org/x/image v0.29.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	software.sslmate.com/src/go-pkcs12 v0.5.0 // indirect
+	software.sslmate.com/src/go-pkcs12 v0.6.0 // indirect
 )
