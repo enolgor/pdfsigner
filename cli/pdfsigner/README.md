@@ -60,9 +60,13 @@ Displays the number of pages in a PDF file.
 **Usage examples:**
 
 ```sh
-pdfsigner page-count <path-to-pdf>
+$ pdfsigner page-count <path-to-pdf>
+#Output
+12
 
-pdfsigner pc <path-to-pdf>
+$ pdfsigner pc <path-to-pdf>
+#Output
+12
 ```
 
 ---
@@ -78,11 +82,17 @@ Shows the dimensions (in points) of a specific page in a PDF file.
 **Usage examples:**
 
 ```sh
-pdfsigner page-dim -p 2 <path-to-pdf>
+$ pdfsigner page-dim -p 2 <path-to-pdf>
+#Output (A4)
+595 842
 
-pdfsigner pd --page 3 <path-to-pdf>
+$ pdfsigner pd --page 3 <path-to-pdf>
+#Output (Letter)
+612 792
 
-PAGE=1 pdfsigner pd <path-to-pdf>
+$ PAGE=1 pdfsigner pd <path-to-pdf>
+#Output
+303 157
 ```
 
 ### Signature commands
@@ -216,23 +226,66 @@ See [Examples](#-examples) section below.
 
 #### `signature-dim` or `sd`
 
-TODO / Work in progress
+Calculate the signature dimensions (in pts) of a visual signature. Useful to calculate the correct placement of the signature stamp in a pdf.
 
 **Options:**
 
-TODO / Work in progress
+A subset of options that can be used in the `sign` command are available (options that affect the signature dimensions). Please refer to [the `sign` command reference](#sign-or-s) for the details about the options:
+
+- `--cert`
+- `--passphrase`
+- `--datetime`
+- `--location`
+- `--width`
+- `--height`
+- `--rotate`
+- `--dpi`
+- `--title`
+- `--no-title`
+- `--datetime-format`
+- `--no-subject`
+- `--no-issuer`
+- `--no-date`
+- `--subject-key`
+- `--issuer-key`
+- `--date-key`
+- `--extra-lines`
+- `--load-font`
+- `--title-font`
+- `--key-font`
+- `--value-font`
+- `--no-empty-line-after-title`
 
 **Usage examples:**
 
 ```sh
-TODO / Work in progress
+$ pdfsigner signature-dim \
+    --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    test.pdf
+#Output
+200 71.5765247410817
+```
+
+```sh
+$ TITLE="Signed by {{.Subject}} on {{.Date}}. \
+  Certificate issued by {{.Issuer}}."
+  pdfsigner sd --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    --width 750 --rotate 270 \
+    --datetime-format "02 Jan 2006 at 15:04:05" \
+    --no-date --no-issuer --no-subject \
+    --no-empty-line-after-title \
+    test.pdf
+#Output
+27.224542242210088 750
 ```
 
 ---
 
 #### `list-fonts`
 
-List available fonts to be used in the visual signature. Roboto fonts with 3 variants (bold, regular, semibold) are embedded and always available. Custom ttf fonts can also be loaded.
+List available fonts to be used in the visual signature. Roboto fonts with 3 variants (bold, regular, semibold) are embedded and always available. Custom ttf fonts can also be loaded. The output has the format `<name> (<source>)`.
 
 **Options:**
 
@@ -241,11 +294,33 @@ List available fonts to be used in the visual signature. Roboto fonts with 3 var
 **Usage examples:**
 
 ```sh
-pdfsigner list-fonts
+$ pdfsigner list-fonts
+#Output
+RobotoMono-Bold (embedded)
+RobotoMono-Regular (embedded)
+RobotoMono-SemiBold (embedded)
+Alef-Bold (system)
+Alef-Regular (system)
+...
 
-pdfsigner list-fonts --load-font <path-to-font> --load-font <path-to-font-2>
+$ pdfsigner list-fonts --load-font <path-to-font> --load-font <path-to-font-2>
+#Output
+RobotoMono-Bold (embedded)
+RobotoMono-Regular (embedded)
+RobotoMono-SemiBold (embedded)
+FontName1 (custom)
+FontName2 (custom)
+Alef-Bold (system)
+...
 
-LOADFONT=<path-to-font> pdfsigner list-fonts
+$ LOADFONT=<path-to-font> pdfsigner list-fonts
+#Output
+RobotoMono-Bold (embedded)
+RobotoMono-Regular (embedded)
+RobotoMono-SemiBold (embedded)
+FontName1 (custom)
+Alef-Bold (system)
+...
 ```
 
 ---
@@ -259,14 +334,14 @@ LOADFONT=<path-to-font> pdfsigner list-fonts
 <td>
 
 ```sh
-pdfsigner sign \
-  --cert cert.p12 \
-  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  --out output.pdf \
-  --add-page \
-  --force \
-  --visible \
-  test.pdf
+$ pdfsigner sign \
+    --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    --out output.pdf \
+    --add-page \
+    --force \
+    --visible \
+    test.pdf
 ```
 
 </td>
@@ -291,19 +366,19 @@ pdfsigner sign \
 <td>
 
 ```sh
-TITLE="Signed by {{.Subject}} on {{.Date}}. \
-Certificate issued by {{.Issuer}}."
-pdfsigner sign --cert cert.p12 \
-  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  --out output.pdf --page 1 --force --visible \
-  --width 750 --rotate 270 --xpos 10 --ypos 50 \
-  --datetime-format "02 Jan 2006 at 15:04:05" \
-  --border-size 0 \
-  --no-date --no-issuer --no-subject \
-  --no-empty-line-after-title \
-  --background-color "transparent" \
-  --title-color "rgba(150, 150, 150, 130)" \
-  test.pdf
+$ TITLE="Signed by {{.Subject}} on {{.Date}}. \
+  Certificate issued by {{.Issuer}}."
+  pdfsigner sign --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    --out output.pdf --page 1 --force --visible \
+    --width 750 --rotate 270 --xpos 10 --ypos 50 \
+    --datetime-format "02 Jan 2006 at 15:04:05" \
+    --border-size 0 \
+    --no-date --no-issuer --no-subject \
+    --no-empty-line-after-title \
+    --background-color "transparent" \
+    --title-color "rgba(150, 150, 150, 130)" \
+    test.pdf
 ```
 
 </td>
@@ -328,15 +403,15 @@ pdfsigner sign --cert cert.p12 \
 <td>
 
 ```sh
-pdfsigner sign --cert cert.p12 \
-  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  -o output.pdf -p 1 -f -v -w 300 -x 150 -y 225 \
-  --rs 0 --nd --ni --nt --sk "Signed by: " \
-  --bc "rgba(230,230,230,255)" \
-  --lf fonts/Corinthia-Bold.ttf \
-  --lf fonts/Corinthia-Regular.ttf \
-  --kf "Corinthia-Bold" --vf "Corinthia-Regular" \
-  test.pdf
+$ pdfsigner sign --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    -o output.pdf -p 1 -f -v -w 300 -x 150 -y 225 \
+    --rs 0 --nd --ni --nt --sk "Signed by: " \
+    --bc "rgba(230,230,230,255)" \
+    --lf fonts/Corinthia-Bold.ttf \
+    --lf fonts/Corinthia-Regular.ttf \
+    --kf "Corinthia-Bold" --vf "Corinthia-Regular" \
+    test.pdf
 ```
 
 </td>
@@ -361,16 +436,16 @@ pdfsigner sign --cert cert.p12 \
 <td>
 
 ```sh
-pdfsigner sign --cert cert.p12 \
-  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  -o output.pdf -p 1 -f -v \
-  -w 300 -x 150 -y 500 --rs 2 \
-  --rc "rgba(255,0,0,255)" \
-  --bc "rgba(0,255,125,125)" \
-  --tc "rgba(255,255,255,255)" \
-  --kc "rgba(0,255,0,255)" \
-  --vc "rgba(255,255,0,255)" \
-  test.pdf
+$ pdfsigner sign --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    -o output.pdf -p 1 -f -v \
+    -w 300 -x 150 -y 500 --rs 2 \
+    --rc "rgba(255,0,0,255)" \
+    --bc "rgba(0,255,125,125)" \
+    --tc "rgba(255,255,255,255)" \
+    --kc "rgba(0,255,0,255)" \
+    --vc "rgba(255,255,0,255)" \
+    test.pdf
 ```
 
 </td>
@@ -395,11 +470,11 @@ pdfsigner sign --cert cert.p12 \
 <td>
 
 ```sh
-pdfsigner sign --cert cert.p12 \
-  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-  -o output.pdf --add-page -f -v \
-  --logo logo.png \
-  test.pdf
+$ pdfsigner sign --cert cert.p12 \
+    --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+    -o output.pdf --add-page -f -v \
+    --logo logo.png \
+    test.pdf
 ```
 
 </td>
