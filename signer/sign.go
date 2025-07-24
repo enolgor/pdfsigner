@@ -56,7 +56,7 @@ func getAppearance(image []byte, conf *config.SignatureConfiguration) *sign.Appe
 	}
 }
 
-func getSignData(date time.Time, unlocked *UnlockedCertificate, metadata *SignatureMetadata, appearance *sign.Appearance) *sign.SignData {
+func getSignData(date time.Time, unlocked *UnlockedCertificate, metadata *SignatureMetadata, appearance *sign.Appearance, options *SignatureOptions) *sign.SignData {
 	data := &sign.SignData{
 		Signature: sign.SignDataSignature{
 			Info: sign.SignDataSignatureInfo{
@@ -73,7 +73,7 @@ func getSignData(date time.Time, unlocked *UnlockedCertificate, metadata *Signat
 		DigestAlgorithm:    crypto.SHA256,
 		Certificate:        unlocked.Certificate,
 		CertificateChains:  unlocked.Chain,
-		TSA:                sign.TSA{},
+		TSA:                options.TSA,
 		RevocationData:     revocation.InfoArchival{},
 		RevocationFunction: nil,
 	}
