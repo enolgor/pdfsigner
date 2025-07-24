@@ -46,6 +46,7 @@ tasks:
         go-licenses report --template={{.ROOT_DIR}}/.other/licenses.tpl --ignore golang.org --ignore github.com/enolgor/pdfsigner --ignore github.com/golang/freetype . >> THIRD_PARTY_LICENSES.md
         echo "| [github.com/golang/freetype](https://github.com/golang/freetype/blob/master/licenses/ftl.txt) | FreeTypeLicense |" >> THIRD_PARTY_LICENSES.md
         echo "| [Roboto-Mono Font](https://fonts.google.com/specimen/Roboto+Mono/license) | SIL OPEN FONT LICENSE Version 1.1 |" >> THIRD_PARTY_LICENSES.md
+        echo "| [Corinthia Font](https://fonts.google.com/specimen/Corinthia/license) | SIL OPEN FONT LICENSE Version 1.1 |" >> THIRD_PARTY_LICENSES.md
   version:*:
     vars:
       MODULE: "{{ index .MATCH 0}}"

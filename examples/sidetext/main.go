@@ -23,6 +23,7 @@
 package main
 
 import (
+	"image/color"
 	"time"
 
 	"github.com/enolgor/pdfsigner/examples"
@@ -32,8 +33,13 @@ import (
 
 // with command line:
 // pdfsigner sign \
-//   -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-//   -o output.pdf --add-page -f -v \
+//   --cert ../cert.p12 --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+//   --out output.pdf --page 1 --force --visible \
+//   --width 750 --rotate 270 --xpos 10 --ypos 50 \
+//   --datetime-format "02 Jan 2006 at 15:04:05" --border-size 0 \
+//   --no-date --no-issuer --no-subject --no-empty-line-after-title \
+//   --background-color "transparent" --title-color "rgba(150, 150, 150, 130)" \
+//   --title "Signed by {{.Subject}} on {{.Date}}. Certificate issued by {{.Issuer}}." \
 //   ../test.pdf
 
 func main() {
@@ -48,7 +54,23 @@ func main() {
 		Location: "New York, USA",
 		Reason:   "Document verification",
 	}
-	conf := config.New()
+	conf := config.New(
+		config.WidthPt(750),
+		config.Rotate(config.ROTATE_270),
+		config.Title("Signed by {{.Subject}} on {{.Date}}. Certificate issued by {{.Issuer}}."),
+		config.DateFormat("02 Jan 2006 at 15:04:05"),
+		config.IncludeDate(false),
+		config.IncludeIssuer(false),
+		config.IncludeSubject(false),
+		config.BackgroundColor(color.RGBA{R: 255, G: 255, B: 255, A: 0}),
+		config.BorderSizePt(0),
+		config.TitleColor(color.RGBA{R: 150, G: 150, B: 150, A: 130}),
+		config.Page(1),
+		config.AddPage(nil),
+		config.PosXPt(10),
+		config.PosYPt(50),
+		config.EmptyLineAfterTitle(false),
+	)
 	if err := signer.SignVisual(cert, pdf, output, date, metadata, conf); err != nil {
 		panic(err)
 	}

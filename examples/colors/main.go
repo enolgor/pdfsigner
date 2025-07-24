@@ -23,6 +23,7 @@
 package main
 
 import (
+	"image/color"
 	"time"
 
 	"github.com/enolgor/pdfsigner/examples"
@@ -33,7 +34,14 @@ import (
 // with command line:
 // pdfsigner sign \
 //   -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
-//   -o output.pdf --add-page -f -v \
+//   -o output.pdf -p 1 -f -v \
+//   -w 300 -x 150 -y 500 \
+//   --rs 2 \
+//   --rc "rgba(255,0,0,255)" \
+//   --bc "rgba(0,255,125,125)" \
+//   --tc "rgba(255,255,255,255)" \
+//   --kc "rgba(0,255,0,255)" \
+//   --vc "rgba(255,255,0,255)" \
 //   ../test.pdf
 
 func main() {
@@ -48,7 +56,20 @@ func main() {
 		Location: "New York, USA",
 		Reason:   "Document verification",
 	}
-	conf := config.New()
+	conf := config.New(
+		config.AddPage(nil),
+		config.Page(1),
+		config.AddPage(nil),
+		config.PosXPt(150),
+		config.PosYPt(500),
+		config.WidthPt(300),
+		config.BorderSizePt(2),
+		config.BorderColor(color.RGBA{R: 255, G: 0, B: 0, A: 255}),
+		config.BackgroundColor(color.RGBA{R: 0, G: 255, B: 125, A: 125}),
+		config.TitleColor(color.RGBA{R: 255, G: 255, B: 255, A: 255}),
+		config.KeyColor(color.RGBA{R: 0, G: 255, B: 0, A: 255}),
+		config.ValueColor(color.RGBA{R: 255, G: 255, B: 0, A: 255}),
+	)
 	if err := signer.SignVisual(cert, pdf, output, date, metadata, conf); err != nil {
 		panic(err)
 	}

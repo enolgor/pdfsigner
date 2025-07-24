@@ -23,6 +23,10 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
+	"image"
+	"image/png"
 	"time"
 
 	"github.com/enolgor/pdfsigner/examples"
@@ -30,10 +34,24 @@ import (
 	"github.com/enolgor/pdfsigner/signer/config"
 )
 
+//go:embed logo.png
+var logoData []byte
+
+var logo image.Image
+
+func init() {
+	var err error
+	logo, err = png.Decode(bytes.NewReader(logoData))
+	if err != nil {
+		panic("failed to decode logo image: " + err.Error())
+	}
+}
+
 // with command line:
 // pdfsigner sign \
 //   -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
 //   -o output.pdf --add-page -f -v \
+//   --logo logo.png
 //   ../test.pdf
 
 func main() {
@@ -48,7 +66,9 @@ func main() {
 		Location: "New York, USA",
 		Reason:   "Document verification",
 	}
-	conf := config.New()
+	conf := config.New(
+		config.Logo(logo),
+	)
 	if err := signer.SignVisual(cert, pdf, output, date, metadata, conf); err != nil {
 		panic(err)
 	}

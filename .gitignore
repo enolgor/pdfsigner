@@ -36,3 +36,4 @@ go.work.sum
 !examples/*/output.pdf
 *.p12
 !examples/cert.p12
+.DS_Store
