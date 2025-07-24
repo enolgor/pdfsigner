@@ -293,13 +293,13 @@ pdfsigner sign \
 ```sh
 TITLE="Signed by {{.Subject}} on {{.Date}}. \
 Certificate issued by {{.Issuer}}."
-pdfsigner sign \
-  --cert cert.p12 \
+pdfsigner sign --cert cert.p12 \
   --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
   --out output.pdf --page 1 --force --visible \
   --width 750 --rotate 270 --xpos 10 --ypos 50 \
   --datetime-format "02 Jan 2006 at 15:04:05" \
-  --border-size 0 --no-date --no-issuer --no-subject \
+  --border-size 0 \
+  --no-date --no-issuer --no-subject \
   --no-empty-line-after-title \
   --background-color "transparent" \
   --title-color "rgba(150, 150, 150, 130)" \
@@ -328,12 +328,13 @@ pdfsigner sign \
 <td>
 
 ```sh
-pdfsigner sign \
-  -c cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+pdfsigner sign --cert cert.p12 \
+  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
   -o output.pdf -p 1 -f -v -w 300 -x 150 -y 225 \
   --rs 0 --nd --ni --nt --sk "Signed by: " \
   --bc "rgba(230,230,230,255)" \
-  --lf fonts/Corinthia-Bold.ttf --lf fonts/Corinthia-Regular.ttf \
+  --lf fonts/Corinthia-Bold.ttf \
+  --lf fonts/Corinthia-Regular.ttf \
   --kf "Corinthia-Bold" --vf "Corinthia-Regular" \
   test.pdf
 ```
@@ -360,8 +361,9 @@ pdfsigner sign \
 <td>
 
 ```sh
-pdfsigner sign \
-  -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+
+pdfsigner sign --cert cert.p12 \
+  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
   -o output.pdf -p 1 -f -v \
   -w 300 -x 150 -y 500 --rs 2 \
   --rc "rgba(255,0,0,255)" \
@@ -369,7 +371,7 @@ pdfsigner sign \
   --tc "rgba(255,255,255,255)" \
   --kc "rgba(0,255,0,255)" \
   --vc "rgba(255,255,0,255)" \
-  ../test.pdf
+  test.pdf
 ```
 
 </td>
