@@ -353,6 +353,40 @@ pdfsigner sign \
 </td>
 </table>
 
+### Colors
+
+<table>
+<tr>
+<td>
+
+```sh
+pdfsigner sign \
+  -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  -o output.pdf -p 1 -f -v \
+  -w 300 -x 150 -y 500 --rs 2 \
+  --rc "rgba(255,0,0,255)" \
+  --bc "rgba(0,255,125,125)" \
+  --tc "rgba(255,255,255,255)" \
+  --kc "rgba(0,255,0,255)" \
+  --vc "rgba(255,255,0,255)" \
+  ../test.pdf
+```
+
+</td>
+<td>
+
+  <a href="../../examples/colors/output.pdf">
+    <img
+      src="../../examples/colors/output.png" 
+      width="75%"
+      title="Colors example"
+      alt="Colors example"
+    />
+  </a>
+
+</td>
+</table>
+
 ----
 This project is licensed under the MIT License.  
 It includes third-party packages under MIT, BSD, FreeType and Apache licenses.  
