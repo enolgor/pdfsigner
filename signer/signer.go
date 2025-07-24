@@ -30,12 +30,19 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/digitorus/pdfsign/sign"
 	"github.com/enolgor/pdfsigner/signer/config"
 	"github.com/enolgor/pdfsigner/signer/draw"
 	"github.com/rotisserie/eris"
 )
 
 var drawer draw.Drawer = draw.Rectangle
+
+type TSA = sign.TSA
+
+type SignatureOptions struct {
+	TSA TSA
+}
 
 type SignatureMetadata struct {
 	Name     string
@@ -44,11 +51,25 @@ type SignatureMetadata struct {
 	Contact  string
 }
 
-func Sign(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Writer, date time.Time, metadata *SignatureMetadata) error {
-	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, nil))
+func WithTSA(tsa TSA) func(*SignatureOptions) {
+	return func(opts *SignatureOptions) {
+		opts.TSA = tsa
+	}
 }
 
-func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Writer, date time.Time, metadata *SignatureMetadata, conf *config.SignatureConfiguration) (err error) {
+func Sign(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Writer, date time.Time, metadata *SignatureMetadata, options ...func(*SignatureOptions)) error {
+	opts := &SignatureOptions{}
+	for _, opt := range options {
+		opt(opts)
+	}
+	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, nil, opts))
+}
+
+func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Writer, date time.Time, metadata *SignatureMetadata, conf *config.SignatureConfiguration, options ...func(*SignatureOptions)) (err error) {
+	opts := &SignatureOptions{}
+	for _, opt := range options {
+		opt(opts)
+	}
 	if conf == nil {
 		conf = config.New()
 	}
@@ -69,7 +90,7 @@ func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Wr
 			conf.PosYPt = (conf.AddPage.Height - conf.HeightPt) * 0.9
 		}
 	}
-	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, getAppearance(imageData.Bytes(), conf)))
+	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, getAppearance(imageData.Bytes(), conf), opts))
 }
 
 func drawPngImage(buff *bytes.Buffer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
