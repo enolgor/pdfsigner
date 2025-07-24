@@ -123,6 +123,12 @@ Sign a pdf file using a pkcs12 certificate. Optionally create a visual stamp.
 
 - `--location <string>`, `-l` or `$LOCATION` - Timezone string of the datetime. Defaults to `UTC`.
 
+- `--tsa-url <string>` or `$TSA_URL` - URL of the RFC3161 timestamp authority to use.
+
+- `--tsa-user <string>` or `$TSA_USER` - Username of the TSA (if protected).
+
+- `--tsa-password <string>` or `$TSA_PASSWORD` - Password of the TSA (if protected).
+
 - `--signature-contact <string>`, `--sc` or `$SIGNATURE_CONTACT` - Contact details in the signature metadata.
 
 - `--signature-location <string>`, `--sl` or `$SIGNATURE_LOCATION` - Location in the signature metadata.

@@ -47,6 +47,9 @@ var SignCommand *cli.Command = &cli.Command{
 		flags.ForceWriteFlag,
 		flags.DatetimeFlag,
 		flags.LocationFlag,
+		flags.TsaURLFlag,
+		flags.TsaUserFlag,
+		flags.TsaPasswordFlag,
 		flags.SignatureNameFlag,
 		flags.SignatureReasonFlag,
 		flags.SignatureLocationFlag,
@@ -100,6 +103,7 @@ var SignCommand *cli.Command = &cli.Command{
 		var conf *config.SignatureConfiguration
 		var metadata *signer.SignatureMetadata
 		var date time.Time
+		var options []func(*signer.SignatureOptions)
 
 		if cert, err = readCertificate(flags.Cert(cmd), flags.Passphrase(cmd)); err != nil {
 			return
@@ -113,13 +117,16 @@ var SignCommand *cli.Command = &cli.Command{
 		defer signed.Close()
 		metadata = getMetadata(cmd)
 		date = flags.Datetime(cmd)
+		if options, err = getOptions(cmd); err != nil {
+			return
+		}
 		if !flags.Visible(cmd) {
-			err = signer.Sign(cert, pdf, signed, date, metadata)
+			err = signer.Sign(cert, pdf, signed, date, metadata, options...)
 		} else {
 			if conf, err = getConfiguration(cmd, pdf); err != nil {
 				return
 			}
-			err = signer.SignVisual(cert, pdf, signed, date, metadata, conf)
+			err = signer.SignVisual(cert, pdf, signed, date, metadata, conf, options...)
 		}
 		return
 	},

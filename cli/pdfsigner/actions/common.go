@@ -72,6 +72,19 @@ func getMetadata(cmd *cli.Command) *signer.SignatureMetadata {
 	}
 }
 
+func getOptions(cmd *cli.Command) ([]func(*signer.SignatureOptions), error) {
+	var options []func(*signer.SignatureOptions)
+	if flags.TsaURL(cmd) != "" {
+		tsa := signer.TSA{
+			URL:      flags.TsaURL(cmd),
+			Username: flags.TsaUser(cmd),
+			Password: flags.TsaPassword(cmd),
+		}
+		options = append(options, signer.WithTSA(tsa))
+	}
+	return options, nil
+}
+
 func getConfiguration(cmd *cli.Command, pdfReader *bytes.Reader) (*config.SignatureConfiguration, error) {
 	var err error
 	if err = flags.LoadFonts(cmd); err != nil {
