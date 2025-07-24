@@ -63,7 +63,9 @@ Displays the number of pages in a PDF file.
 $ pdfsigner page-count <path-to-pdf>
 #Output
 12
+```
 
+```sh
 $ pdfsigner pc <path-to-pdf>
 #Output
 12
@@ -85,11 +87,15 @@ Shows the dimensions (in points) of a specific page in a PDF file.
 $ pdfsigner page-dim -p 2 <path-to-pdf>
 #Output (A4)
 595 842
+```
 
+```sh
 $ pdfsigner pd --page 3 <path-to-pdf>
 #Output (Letter)
 612 792
+```
 
+```sh
 $ PAGE=1 pdfsigner pd <path-to-pdf>
 #Output
 303 157
@@ -302,7 +308,9 @@ RobotoMono-SemiBold (embedded)
 Alef-Bold (system)
 Alef-Regular (system)
 ...
+```
 
+```sh
 $ pdfsigner list-fonts --load-font <path-to-font> --load-font <path-to-font-2>
 #Output
 RobotoMono-Bold (embedded)
@@ -312,7 +320,9 @@ FontName1 (custom)
 FontName2 (custom)
 Alef-Bold (system)
 ...
+```
 
+```sh
 $ LOADFONT=<path-to-font> pdfsigner list-fonts
 #Output
 RobotoMono-Bold (embedded)
