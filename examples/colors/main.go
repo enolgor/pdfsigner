@@ -31,7 +31,7 @@ import (
 	"github.com/enolgor/pdfsigner/signer/config"
 )
 
-// with command line (from examples root):
+// with command line:
 // pdfsigner sign \
 //   -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
 //   -o output.pdf -p 1 -f -v \

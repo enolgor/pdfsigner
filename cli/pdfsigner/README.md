@@ -361,7 +361,6 @@ pdfsigner sign --cert cert.p12 \
 <td>
 
 ```sh
-
 pdfsigner sign --cert cert.p12 \
   --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
   -o output.pdf -p 1 -f -v \
@@ -383,6 +382,35 @@ pdfsigner sign --cert cert.p12 \
       width="75%"
       title="Colors example"
       alt="Colors example"
+    />
+  </a>
+
+</td>
+</table>
+
+### With logo, added to last page
+
+<table>
+<tr>
+<td>
+
+```sh
+pdfsigner sign --cert cert.p12 \
+  --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+  -o output.pdf --add-page -f -v \
+  --logo logo.png \
+  test.pdf
+```
+
+</td>
+<td>
+
+  <a href="../../examples/logo/output.pdf">
+    <img
+      src="../../examples/logo/output.png" 
+      width="75%"
+      title="Logo example"
+      alt="Logo example"
     />
   </a>
 

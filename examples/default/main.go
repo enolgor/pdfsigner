@@ -30,6 +30,12 @@ import (
 	"github.com/enolgor/pdfsigner/signer/config"
 )
 
+// with command line:
+// pdfsigner sign \
+//   -c ../cert.p12 -s "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
+//   -o output.pdf --add-page -f -v \
+//   ../test.pdf
+
 func main() {
 	cert := examples.GetCertificate()
 	pdf := examples.GetTestPDF()

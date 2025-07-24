@@ -31,7 +31,7 @@ import (
 	"github.com/enolgor/pdfsigner/signer/config"
 )
 
-// with command line (from examples root):
+// with command line:
 // pdfsigner sign \
 //   --cert ../cert.p12 --passphrase "bji&M7^#fpEBJAs53JXYf7!3v6MGTucT" \
 //   --out output.pdf --page 1 --force --visible \
