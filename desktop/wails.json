@@ -1,0 +1,21 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "desktop",
+  "outputfilename": "pdfsigner",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "enolgor",
+    "email": "enolgor@teleco.upv.es"
+  },
+  "info": {
+    "companyName": "@enolgor",
+    "productName": "pdfsigner",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright (c) 2025 @enolgor",
+    "comments": "This app is licensed under the MIT license. For details about third party dependencies see github.com/enolgor/pdfsigner/desktop/THIRD_PARTY_LICENSES.md"
+  },
+  "obfuscated": false
+}
