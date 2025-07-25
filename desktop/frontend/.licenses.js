@@ -28,5 +28,5 @@ import fs from 'fs';
 const licenses = JSON.parse(fs.readFileSync('./licenses.json'));
 
 for(let { name, link, licenseType } of licenses) {
-  console.log(`| [${name}](${link}) | ${licenseType} |`);
+  console.log(`| [${name}](${link.replace('git+', '')}) | ${licenseType} |`);
 }
