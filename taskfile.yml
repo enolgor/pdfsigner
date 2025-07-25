@@ -39,6 +39,9 @@ tasks:
       - |
         cd {{.MODULE}}
         go-licenses report --template=.licenses.tpl --ignore golang.org --ignore github.com/enolgor/pdfsigner --ignore github.com/golang/freetype . > THIRD_PARTY_LICENSES.md
+        {{if eq .MODULE "desktop"}}
+        npm run --prefix frontend --silent licenses >> THIRD_PARTY_LICENSES.md
+        {{end}}
   version:*:
     vars:
       MODULE: "{{ index .MATCH 0}}"
