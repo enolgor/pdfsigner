@@ -19,6 +19,6 @@
 | [github.com/rotisserie/eris](https://github.com/rotisserie/eris/blob/v0.5.4/LICENSE) | MIT |
 | [github.com/urfave/cli/v3](https://github.com/urfave/cli/blob/v3.3.8/LICENSE) | MIT |
 | [gopkg.in/yaml.v2](https://github.com/go-yaml/yaml/blob/v2.4.0/LICENSE) | Apache-2.0 |
-| [software.sslmate.com/src/go-pkcs12](https://github.com/SSLMate/go-pkcs12/blob/v0.5.0/LICENSE) | BSD-3-Clause || [github.com/golang/freetype](https://github.com/golang/freetype/blob/master/licenses/ftl.txt) | FreeTypeLicense |
+| [software.sslmate.com/src/go-pkcs12](https://github.com/SSLMate/go-pkcs12/blob/v0.6.0/LICENSE) | BSD-3-Clause |
+| [github.com/golang/freetype](https://github.com/golang/freetype/blob/master/licenses/ftl.txt) | FreeTypeLicense |
 | [Roboto-Mono Font](https://fonts.google.com/specimen/Roboto+Mono/license) | SIL OPEN FONT LICENSE Version 1.1 |
-| [Corinthia Font](https://fonts.google.com/specimen/Corinthia/license) | SIL OPEN FONT LICENSE Version 1.1 |
