@@ -2,7 +2,7 @@ module github.com/enolgor/pdfsigner/examples
 
 go 1.24.3
 
-require github.com/enolgor/pdfsigner/signer v1.0.0
+require github.com/enolgor/pdfsigner/signer v1.0.1
 
 require (
 	github.com/digitorus/pdf v0.1.2 // indirect
@@ -24,5 +24,5 @@ require (
 	golang.org/x/image v0.29.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	software.sslmate.com/src/go-pkcs12 v0.5.0 // indirect
+	software.sslmate.com/src/go-pkcs12 v0.6.0 // indirect
 )
