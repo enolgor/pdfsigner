@@ -11,13 +11,16 @@
     "licenses": "npx --yes license-report --output='json' > licenses.json && node .licenses.js && npx --yes rimraf licenses.json"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^1.0.1",
-    "@tsconfig/svelte": "^3.0.0",
-    "svelte": "^3.49.0",
-    "svelte-check": "^2.8.0",
-    "svelte-preprocess": "^4.10.7",
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^24.0.3",
+    "svelte": "^5.35.6",
+    "svelte-check": "^4.2.1",
     "tslib": "^2.4.0",
-    "typescript": "^4.6.4",
-    "vite": "^3.0.7"
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "svelte-i18n": "^4.0.1"
   }
 }

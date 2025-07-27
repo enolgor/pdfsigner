@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.tolgee.io/cli-schema.json",
+  "apiUrl": "https://tolgee.enolgor.eu",
+  "projectId": 4,
+  "format": "YAML_ICU",
+  "push": {
+    "files": [
+      {
+        "path": "./translations/yaml/en.yaml",
+        "language": "en"
+      }
+    ],
+    "forceMode": "OVERRIDE",
+    "languages": ["en"],
+    "removeOtherKeys": true
+  },
+  "pull": {
+    "path": "./translations/yaml"
+  }
+}

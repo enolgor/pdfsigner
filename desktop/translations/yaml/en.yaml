@@ -1,0 +1,6 @@
+---
+hello: "Hello {name}"
+lang:
+  en: "English"
+  es: "Spanish"
+test: holaaaa

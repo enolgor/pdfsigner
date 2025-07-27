@@ -6,6 +6,7 @@
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
+  "reloaddirs": "./translations/yaml",
   "author": {
     "name": "enolgor",
     "email": "enolgor@teleco.upv.es"

@@ -1,7 +1,10 @@
 <script lang="ts">
   import logo from './assets/images/logo-universal.png'
   import {Greet} from '../wailsjs/go/main/App.js'
-
+  import initialize from '@src/app/initialize';
+  import i18n from '@src/app/i18n.svelte';
+  import { _ } from 'svelte-i18n';
+  
   let resultText: string = "Please enter your name below 👇"
   let name: string
 
@@ -10,6 +13,9 @@
   }
 </script>
 
+{#await initialize()}
+<!--todo-->
+{:then}
 <main>
   <img alt="Wails logo" id="logo" src="{logo}">
   <div class="result" id="result">{resultText}</div>
@@ -17,8 +23,15 @@
     <input autocomplete="off" bind:value={name} class="input" id="name" type="text"/>
     <button class="btn" on:click={greet}>Greet</button>
   </div>
+  <div>
+    <select bind:value={i18n.lang}>
+      {#each i18n.langs as lg}
+        <option value={lg}>{$_(`lang.${lg}`)}</option>
+      {/each}
+    </select>
+  </div>
 </main>
-
+{/await}
 <style>
 
   #logo {

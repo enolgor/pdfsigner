@@ -21,11 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+import path from 'path'
 import {defineConfig} from 'vite'
 import {svelte} from '@sveltejs/vite-plugin-svelte'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte()]
+  plugins: [svelte()],
+  resolve: {
+    alias: {
+      '@go': path.resolve('wailsjs/go/main/App'),
+      '@runtime': path.resolve('wailsjs/runtime/runtime'),
+      '@src': path.resolve('src')
+    }
+  }
 })

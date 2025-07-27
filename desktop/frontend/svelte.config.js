@@ -22,10 +22,23 @@
  * SOFTWARE.
  */
 
-import sveltePreprocess from 'svelte-preprocess'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import path from 'path'
 
 export default {
-  // Consult https://github.com/sveltejs/svelte-preprocess
+  // Consult https://svelte.dev/docs#compile-time-svelte-preprocess
   // for more information about preprocessors
-  preprocess: sveltePreprocess()
+  preprocess: vitePreprocess(),
+  kit: {
+    alias: {
+      '@go': path.resolve('wailsjs/go/main/App'),
+      '@runtime': path.resolve('wailsjs/runtime/runtime'),
+      '@src': path.resolve('src')
+    }
+  },
+  onwarn: (warning, handler) => {
+    // suppress warnings on `vite dev` and `vite build`; but even without this, things still work
+    if (warning.code.startsWith('a11y')) return;
+    handler(warning);
+  },
 }

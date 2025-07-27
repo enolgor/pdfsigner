@@ -23,48 +23,58 @@
 package main
 
 import (
-	"context"
+	"bytes"
+	_ "embed"
+	"io"
+	"os"
+	"time"
 
-	"github.com/enolgor/pdfsigner/desktop/translations"
-	"github.com/goforj/godump"
+	"github.com/enolgor/pdfsigner/signer"
+	"github.com/enolgor/pdfsigner/signer/config"
 )
 
-var t = translations.Translate
+//go:embed test.pdf
+var testPDFData []byte
 
-// App struct
-type App struct {
-	ctx context.Context
+//go:embed cert.p12
+var certificateData []byte
+
+const passphrase = "iSwsFN45Hc9z@6duvE#^jy#&VD*qDhd%6"
+
+func GetCertificate() *signer.UnlockedCertificate {
+	cert, err := signer.UnlockCertificate(certificateData, passphrase)
+	if err != nil {
+		panic(err)
+	}
+	return cert
 }
 
-// NewApp creates a new App application struct
-func NewApp() *App {
-	godump.Dump(translations.Translations)
-	return &App{}
+func GetTestPDF() *bytes.Reader {
+	return bytes.NewReader(testPDFData)
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
+func GetOutputPDF() io.WriteCloser {
+	if out, err := os.Create("output.pdf"); err != nil {
+		panic(err)
+	} else {
+		return out
+	}
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return t("hello", translations.Vars{"name": name})
-}
-
-func (a *App) Translations() map[string]map[string]string {
-	return translations.Translations
-}
-
-func (a *App) GetFallbackLang() string {
-	return translations.DefaultLang
-}
-
-func (a *App) GetLang() string {
-	return translations.CurrentLang
-}
-
-func (a *App) SetLang(lang string) {
-	translations.SetLang(lang)
+func main() {
+	cert := GetCertificate()
+	pdf := GetTestPDF()
+	date := time.Now()
+	output := GetOutputPDF()
+	defer output.Close()
+	metadata := &signer.SignatureMetadata{
+		Name:     "John Doe",
+		Contact:  "john.doe@example.com",
+		Location: "New York, USA",
+		Reason:   "Document verification",
+	}
+	conf := config.New()
+	if err := signer.SignVisual(cert, pdf, output, date, metadata, conf, signer.WithTSA(signer.TSA{URL: "http://tss.accv.es:8318/tsa"})); err != nil {
+		panic(err)
+	}
 }
