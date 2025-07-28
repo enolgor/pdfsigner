@@ -30,7 +30,7 @@ export default defineConfig({
   plugins: [svelte()],
   resolve: {
     alias: {
-      '@go': path.resolve('wailsjs/go/main/App'),
+      '@go': path.resolve('wailsjs/go/app/App'),
       '@runtime': path.resolve('wailsjs/runtime/runtime'),
       '@src': path.resolve('src')
     }

@@ -16,7 +16,7 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "paths": {
-      "@go": ["./wailsjs/go/main/App"],
+      "@go": ["./wailsjs/go/app/App"],
       "@runtime": ["./wailsjs/runtime/runtime"],
       "@src/*": ["./src/*"],
     }

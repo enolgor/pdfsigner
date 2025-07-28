@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/enolgor/pdfsigner/desktop/translations"
+	"github.com/enolgor/pdfsigner/desktop/app/translations"
 )
 
 var defaultSettings map[string]string = map[string]string{
 	"lang":  translations.DefaultLang,
 	"theme": "light",
+	"enc":   "",
 }
 
 type Settings struct {
@@ -53,8 +54,17 @@ func (s *Settings) Save(values map[string]string) (err error) {
 	return
 }
 
-func (s *Settings) Get() map[string]string {
+func (s *Settings) All() map[string]string {
 	return s.values
+}
+
+func (s *Settings) Get(key string) string {
+	return s.values[key]
+}
+
+func (s *Settings) Set(key, value string) error {
+	s.values[key] = value
+	return s.Save(s.values)
 }
 
 func merge(m1 map[string]string, m2 map[string]string) map[string]string {

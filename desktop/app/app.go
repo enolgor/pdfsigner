@@ -20,16 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package main
+package app
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"path"
 
-	"github.com/enolgor/pdfsigner/desktop/settings"
-	"github.com/enolgor/pdfsigner/desktop/translations"
+	"github.com/enolgor/pdfsigner/desktop/app/db"
+	"github.com/enolgor/pdfsigner/desktop/app/settings"
+	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/goforj/godump"
 )
 
@@ -41,6 +43,7 @@ type App struct {
 	appKey   string
 	settings *settings.Settings
 	dataDir  string
+	db       *db.DB
 }
 
 // NewApp creates a new App application struct
@@ -51,7 +54,7 @@ func NewApp(appKey string) *App {
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) Startup(ctx context.Context) {
 	a.ctx = ctx
 	var err error
 	var configDir string
@@ -65,6 +68,7 @@ func (a *App) startup(ctx context.Context) {
 	if a.settings, err = settings.New(path.Join(a.dataDir, "settings.json")); err != nil {
 		a.handleErr(err)
 	}
+	a.db = db.New(path.Join(a.dataDir, "data"))
 }
 
 // Greet returns a greeting for the given name
@@ -89,7 +93,7 @@ func (a *App) SetLang(lang string) {
 }
 
 func (a *App) Settings() map[string]string {
-	return a.settings.Get()
+	return a.settings.All()
 }
 
 func (a *App) SaveSettings(values map[string]string) map[string]string {
@@ -97,6 +101,55 @@ func (a *App) SaveSettings(values map[string]string) map[string]string {
 		a.handleErr(err)
 	}
 	return values
+}
+
+func (a *App) IsLocked() bool {
+	return a.db.IsClosed()
+}
+
+func (a *App) OpenDB(password string) {
+	if !a.IsLocked() {
+		return
+	}
+	var key, salt []byte
+	var err error
+	if key, salt, err = db.Derive(password, a.settings.Get("enc")); err != nil {
+		a.handleErr(err)
+		return
+	}
+	if err = a.settings.Set("enc", hex.EncodeToString(salt)); err != nil {
+		a.handleErr(err)
+		return
+	}
+	if err = a.db.Open(key); err != nil {
+		a.handleErr(err)
+		return
+	}
+}
+
+func (a *App) ChangePassword(new string) {
+	var key, salt []byte
+	var err error
+	if key, salt, err = db.Derive(new, ""); err != nil {
+		a.handleErr(err)
+		return
+	}
+	if err = a.db.ReencryptDB(key); err != nil {
+		a.handleErr(err)
+		return
+	}
+	if err = a.settings.Set("enc", hex.EncodeToString(salt)); err != nil {
+		a.handleErr(err)
+		return
+	}
+}
+
+func (a *App) ReadTest() string {
+	return a.db.ReadTest()
+}
+
+func (a *App) WriteTest(value string) {
+	a.db.SetTest(value)
 }
 
 func (a *App) handleErr(err error) {

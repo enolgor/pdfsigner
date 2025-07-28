@@ -6,7 +6,7 @@
   "push": {
     "files": [
       {
-        "path": "./translations/yaml/en.yaml",
+        "path": "./app/translations/yaml/en.yaml",
         "language": "en"
       }
     ],
@@ -15,6 +15,6 @@
     "removeOtherKeys": true
   },
   "pull": {
-    "path": "./translations/yaml"
+    "path": "./app/translations/yaml"
   }
 }
