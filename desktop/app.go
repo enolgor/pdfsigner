@@ -24,7 +24,11 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"path"
 
+	"github.com/enolgor/pdfsigner/desktop/settings"
 	"github.com/enolgor/pdfsigner/desktop/translations"
 	"github.com/goforj/godump"
 )
@@ -33,19 +37,34 @@ var t = translations.Translate
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx      context.Context
+	appKey   string
+	settings *settings.Settings
+	dataDir  string
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
+func NewApp(appKey string) *App {
 	godump.Dump(translations.Translations)
-	return &App{}
+	return &App{appKey: appKey}
 }
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	var err error
+	var configDir string
+	if configDir, err = os.UserConfigDir(); err != nil {
+		a.handleErr(err)
+	}
+	a.dataDir = path.Join(configDir, a.appKey)
+	if err = os.MkdirAll(a.dataDir, os.ModePerm); err != nil {
+		a.handleErr(err)
+	}
+	if a.settings, err = settings.New(path.Join(a.dataDir, "settings.json")); err != nil {
+		a.handleErr(err)
+	}
 }
 
 // Greet returns a greeting for the given name
@@ -67,4 +86,19 @@ func (a *App) GetLang() string {
 
 func (a *App) SetLang(lang string) {
 	translations.SetLang(lang)
+}
+
+func (a *App) Settings() map[string]string {
+	return a.settings.Get()
+}
+
+func (a *App) SaveSettings(values map[string]string) map[string]string {
+	if err := a.settings.Save(values); err != nil {
+		a.handleErr(err)
+	}
+	return values
+}
+
+func (a *App) handleErr(err error) {
+	fmt.Printf("error: %s\n", err.Error()) //TODO
 }

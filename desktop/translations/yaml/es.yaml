@@ -1,5 +1,11 @@
 ---
-hello: "Hola {name}"
+certificates: "Certificados"
+choose-an-option: "Elige una opción"
+help: "Ayuda"
 lang:
   en: "Inglés"
   es: "Español"
+language: "Idioma"
+settings: "Ajustes"
+signpdf: "Firmar PDF"
+stamps: "Sellos"

@@ -30,12 +30,14 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
+const applicationKey = "com.github.enolgor.pdfsigner"
+
 //go:embed all:frontend/dist
 var assets embed.FS
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
+	app := NewApp(applicationKey)
 
 	// Create application with options
 	err := wails.Run(&options.App{

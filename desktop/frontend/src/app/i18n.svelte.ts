@@ -9,7 +9,6 @@ let _lang : string = $state('');
 export async function initialize() {
   const translations = await Translations();
   _langs = Object.keys(translations);
-  console.log(translations);
   for (let lang of Object.keys(translations)) {
     addMessages(lang, translations[lang]);
   }

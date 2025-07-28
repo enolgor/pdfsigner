@@ -14,8 +14,16 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function SaveSettings(arg1) {
+  return window['go']['main']['App']['SaveSettings'](arg1);
+}
+
 export function SetLang(arg1) {
   return window['go']['main']['App']['SetLang'](arg1);
+}
+
+export function Settings() {
+  return window['go']['main']['App']['Settings']();
 }
 
 export function Translations() {

@@ -1,6 +1,13 @@
 ---
-hello: "Hello {name}"
+certificates: "Certificates"
+choose-an-option: "Choose an option"
+help: "Help"
 lang:
   en: "English"
   es: "Spanish"
-test: holaaaa
+language: "Language"
+settings: "Settings"
+signpdf: "Sign PDF"
+stamps: "Stamps"
+save: "Save"
+enable-darkmode: "Enable dark mode"

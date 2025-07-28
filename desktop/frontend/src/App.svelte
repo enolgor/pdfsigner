@@ -1,92 +1,45 @@
 <script lang="ts">
-  import logo from './assets/images/logo-universal.png'
-  import {Greet} from '../wailsjs/go/main/App.js'
   import initialize from '@src/app/initialize';
-  import i18n from '@src/app/i18n.svelte';
   import { _ } from 'svelte-i18n';
-  
-  let resultText: string = "Please enter your name below 👇"
-  let name: string
+  import { Shell } from '@src/components';
+  import { views, controller } from '@src/app/views.svelte';
+  import {
+    Certificates,
+    FirstRun,
+    Locked,
+    Settings,
+    Sign,
+    Stamps,
+    Loading,
+    Help,
+  } from '@src/views';
 
-  function greet(): void {
-    Greet(name).then(result => resultText = result)
-  }
+  let emptyShell : boolean = $derived(controller.view === views.locked || controller.view === views.firstRun);
 </script>
 
 {#await initialize()}
-<!--todo-->
+<Loading />
 {:then}
-<main>
-  <img alt="Wails logo" id="logo" src="{logo}">
-  <div class="result" id="result">{resultText}</div>
-  <div class="input-box" id="input">
-    <input autocomplete="off" bind:value={name} class="input" id="name" type="text"/>
-    <button class="btn" on:click={greet}>Greet</button>
-  </div>
-  <div>
-    <select bind:value={i18n.lang}>
-      {#each i18n.langs as lg}
-        <option value={lg}>{$_(`lang.${lg}`)}</option>
-      {/each}
-    </select>
-  </div>
-</main>
+<Shell {emptyShell} {content} />
 {/await}
-<style>
 
-  #logo {
-    display: block;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    padding: 10% 0 0;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-origin: content-box;
-  }
-
-  .result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
-  }
-
-  .input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
-    cursor: pointer;
-  }
-
-  .input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
-  }
-
-  .input-box .input {
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    background-color: rgba(240, 240, 240, 1);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .input-box .input:hover {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .input-box .input:focus {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-</style>
+{#snippet content()}
+{@const view = controller.view}
+{#if view === views.settings}
+  <Settings />
+{:else if view === views.certificates}
+  <Certificates />
+{:else if view === views.stamps}
+  <Stamps />
+{:else if view === views.sign}
+  <Sign />
+{:else if view === views.firstRun}
+  <FirstRun />
+{:else if view === views.locked}
+  <Locked />
+{:else if view === views.help}
+  <Help />
+{:else}
+  <Loading />
+{/if}
+{/snippet}

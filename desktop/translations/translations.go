@@ -2,7 +2,6 @@ package translations
 
 import (
 	"embed"
-	"fmt"
 	"io"
 	"maps"
 	"strings"
@@ -36,7 +35,6 @@ func init() {
 		if entry.IsDir() || (!strings.HasSuffix(name, ".yaml") && !strings.HasSuffix(name, ".yml")) {
 			continue
 		}
-		fmt.Println("open", name)
 		f, err := fs.Open("yaml/" + name)
 		if err != nil {
 			panic(err)

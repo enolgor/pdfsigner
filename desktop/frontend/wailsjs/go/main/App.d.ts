@@ -7,6 +7,10 @@ export function GetLang():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function SaveSettings(arg1:Record<string, string>):Promise<Record<string, string>>;
+
 export function SetLang(arg1:string):Promise<void>;
+
+export function Settings():Promise<Record<string, string>>;
 
 export function Translations():Promise<Record<string, Record<string, string>>>;
