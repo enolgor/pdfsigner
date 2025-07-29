@@ -1,12 +1,15 @@
 package store
 
 import (
-	"errors"
-	"fmt"
 	"time"
 
 	"github.com/Jipok/go-persist"
+	"github.com/rotisserie/eris"
 )
+
+var ErrItemNotExist error = eris.New("item does not exist")
+var ErrDatabaseLocked error = eris.New("database is locked")
+var ErrItemDecode error = eris.New("item could not be decoded")
 
 type DB struct {
 	locked   bool
@@ -40,6 +43,14 @@ func New(path string) (db *DB, err error) {
 	return
 }
 
+func (db *DB) ReadFlag(key string) (string, bool) {
+	return db.internal.Get(key)
+}
+
+func (db *DB) SetFlag(key, value string) {
+	db.internal.Set(key, value)
+}
+
 func (db *DB) Unlock(password string) (err error) {
 	if !db.locked {
 		return
@@ -48,7 +59,7 @@ func (db *DB) Unlock(password string) (err error) {
 	var ok bool
 	var key []byte
 	if salt, ok = db.internal.Get("salt"); !ok {
-		err = errors.New("salt not found")
+		err = eris.Wrap(ErrItemNotExist, "salt not found")
 		return
 	}
 	if key, _, err = Derive(password, salt); err != nil {
@@ -63,7 +74,7 @@ func (db *DB) Unlock(password string) (err error) {
 
 func (db *DB) ReencryptDB(password string) (err error) {
 	if db.locked {
-		return errors.New("database is locked")
+		return ErrDatabaseLocked
 	}
 	var newcipher Cipher
 	if password == "" {
@@ -105,34 +116,29 @@ func rangeReencrypt[T any](pmap *persist.PersistMap[Encrypted[T]], old, new Ciph
 }
 
 func Read[T any](db *DB, bucket, key string) (t T, err error) {
-	pmap, ok := db.data[bucket]
-	if !ok {
-		if pmap, err = persist.Map[Encrypted[any]](db.store, bucket); err != nil {
-			return
-		}
-		db.data[bucket] = pmap
+	var pmap *persist.PersistMap[Encrypted[any]]
+	var ok bool
+	if pmap, err = db.GetBucket(bucket); err != nil {
+		return
 	}
 	item, found := pmap.Get(key)
 	if !found {
-		err = fmt.Errorf("item %s/%s not found", bucket, key)
+		err = eris.Wrapf(ErrItemNotExist, "item %s/%s not found", bucket, key)
 		return
 	}
 	if err = item.Open(db.cipher); err != nil {
 		return
 	}
 	if t, ok = (*item.Value).(T); !ok {
-		err = fmt.Errorf("wrong type for item %s/%s", bucket, key)
+		err = eris.Wrapf(ErrItemDecode, "wrong type for item %s/%s", bucket, key)
 	}
 	return
 }
 
 func Set(db *DB, bucket, key string, val any) (err error) {
-	pmap, ok := db.data[bucket]
-	if !ok {
-		if pmap, err = persist.Map[Encrypted[any]](db.store, bucket); err != nil {
-			return
-		}
-		db.data[bucket] = pmap
+	var pmap *persist.PersistMap[Encrypted[any]]
+	if pmap, err = db.GetBucket(bucket); err != nil {
+		return
 	}
 	item := NewEncrypted(&val)
 	if err = item.Seal(db.cipher); err != nil {
@@ -142,10 +148,58 @@ func Set(db *DB, bucket, key string, val any) (err error) {
 	return
 }
 
+func All[T any](db *DB, bucket string) (all []T, err error) {
+	var pmap *persist.PersistMap[Encrypted[any]]
+	if pmap, err = db.GetBucket(bucket); err != nil {
+		return
+	}
+	all = []T{}
+	var ok bool
+	pmap.Range(func(key string, item Encrypted[any]) bool {
+		if err = item.Open(db.cipher); err != nil {
+			return false
+		}
+		var t T
+		if t, ok = (*item.Value).(T); !ok {
+			err = eris.Wrapf(ErrItemDecode, "wrong type for item %s/%s", bucket, key)
+			return false
+		}
+		all = append(all, t)
+		return true
+	})
+	return
+}
+
+func Delete(db *DB, bucket, key string) (err error) {
+	var pmap *persist.PersistMap[Encrypted[any]]
+	if pmap, err = db.GetBucket(bucket); err != nil {
+		return
+	}
+	if found := pmap.Delete(key); !found {
+		err = eris.Wrapf(ErrItemNotExist, "item %s/%s not found", bucket, key)
+	}
+	return
+}
+
+func (db *DB) GetBucket(bucket string) (pmap *persist.PersistMap[Encrypted[any]], err error) {
+	var ok bool
+	if pmap, ok = db.data[bucket]; !ok {
+		if pmap, err = persist.Map[Encrypted[any]](db.store, bucket); err != nil {
+			return
+		}
+		db.data[bucket] = pmap
+	}
+	return
+}
+
 func (db *DB) IsLocked() bool {
 	return db.locked
 }
 
 func (db *DB) Close() error {
 	return db.store.Close()
+}
+
+func IsNotExist(err error) bool {
+	return eris.Is(err, ErrItemNotExist)
 }

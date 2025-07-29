@@ -70,6 +70,9 @@ func (a *App) Startup(ctx context.Context) {
 	if a.db, err = store.New(path.Join(a.dataDir, "data")); err != nil {
 		a.handleErr(err)
 	}
+	if _, ok := a.db.ReadFlag("first-run"); !ok {
+		a.db.SetFlag("first-run", "true")
+	}
 }
 
 // Greet returns a greeting for the given name
@@ -132,6 +135,15 @@ func (a *App) ReadTest() string {
 
 func (a *App) WriteTest(value string) {
 	store.Set(a.db, "data", "test", value)
+}
+
+func (a *App) IsFirstRun() bool {
+	v, _ := a.db.ReadFlag("first-run")
+	return v == "true"
+}
+
+func (a *App) FirstRunCompleted() {
+	a.db.SetFlag("first-run", "false")
 }
 
 func (a *App) handleErr(err error) {
