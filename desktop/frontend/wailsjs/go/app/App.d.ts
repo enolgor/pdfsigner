@@ -9,9 +9,7 @@ export function GetLang():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
-export function IsLocked():Promise<boolean>;
-
-export function OpenDB(arg1:string):Promise<void>;
+export function IsStoreLocked():Promise<boolean>;
 
 export function ReadTest():Promise<string>;
 
@@ -22,5 +20,7 @@ export function SetLang(arg1:string):Promise<void>;
 export function Settings():Promise<Record<string, string>>;
 
 export function Translations():Promise<Record<string, Record<string, string>>>;
+
+export function UnlockStore(arg1:string):Promise<void>;
 
 export function WriteTest(arg1:string):Promise<void>;

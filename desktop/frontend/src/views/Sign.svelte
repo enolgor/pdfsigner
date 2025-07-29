@@ -10,7 +10,7 @@
     Button,
   } from "carbon-components-svelte";
     import { onMount } from "svelte";
-    import db from '@src/app/db.svelte';
+    import store from '@src/app/store.svelte';
   interface Props {
 
   }
@@ -23,22 +23,25 @@
   let password : string = $state('');
 
   onMount(async () => {
-    previous = await db.readTest();
+    if (!store.locked) {
+      previous = await store.readTest();
+    }
   });
 
   async function save() {
-    await db.writeTest(current);
-    previous = await db.readTest();
+    await store.writeTest(current);
+    previous = await store.readTest();
     current = '';
   }
 
   async function unlock() {
-    await db.unlock(password);
+    await store.unlock(password);
     password = '';
+    previous = await store.readTest();
   }
 
   async function changePassword() {
-    await db.changePassword(password);
+    await store.changePassword(password);
     password = '';
   }
 </script>
@@ -47,7 +50,7 @@
   <Grid>
     <Row>
       <Column>
-        {#if db.locked}
+        {#if store.locked}
         <Form>
           <FormGroup>
             <TextInput

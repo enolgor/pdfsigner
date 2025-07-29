@@ -24,13 +24,12 @@ package app
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"path"
 
-	"github.com/enolgor/pdfsigner/desktop/app/db"
 	"github.com/enolgor/pdfsigner/desktop/app/settings"
+	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/goforj/godump"
 )
@@ -43,7 +42,7 @@ type App struct {
 	appKey   string
 	settings *settings.Settings
 	dataDir  string
-	db       *db.DB
+	db       *store.DB
 }
 
 // NewApp creates a new App application struct
@@ -68,7 +67,9 @@ func (a *App) Startup(ctx context.Context) {
 	if a.settings, err = settings.New(path.Join(a.dataDir, "settings.json")); err != nil {
 		a.handleErr(err)
 	}
-	a.db = db.New(path.Join(a.dataDir, "data"))
+	if a.db, err = store.New(path.Join(a.dataDir, "data")); err != nil {
+		a.handleErr(err)
+	}
 }
 
 // Greet returns a greeting for the given name
@@ -103,53 +104,34 @@ func (a *App) SaveSettings(values map[string]string) map[string]string {
 	return values
 }
 
-func (a *App) IsLocked() bool {
-	return a.db.IsClosed()
+func (a *App) IsStoreLocked() bool {
+	return a.db.IsLocked()
 }
 
-func (a *App) OpenDB(password string) {
-	if !a.IsLocked() {
-		return
-	}
-	var key, salt []byte
-	var err error
-	if key, salt, err = db.Derive(password, a.settings.Get("enc")); err != nil {
-		a.handleErr(err)
-		return
-	}
-	if err = a.settings.Set("enc", hex.EncodeToString(salt)); err != nil {
-		a.handleErr(err)
-		return
-	}
-	if err = a.db.Open(key); err != nil {
+func (a *App) UnlockStore(password string) {
+	if err := a.db.Unlock(password); err != nil {
 		a.handleErr(err)
 		return
 	}
 }
 
 func (a *App) ChangePassword(new string) {
-	var key, salt []byte
-	var err error
-	if key, salt, err = db.Derive(new, ""); err != nil {
-		a.handleErr(err)
-		return
-	}
-	if err = a.db.ReencryptDB(key); err != nil {
-		a.handleErr(err)
-		return
-	}
-	if err = a.settings.Set("enc", hex.EncodeToString(salt)); err != nil {
+	if err := a.db.ReencryptDB(new); err != nil {
 		a.handleErr(err)
 		return
 	}
 }
 
 func (a *App) ReadTest() string {
-	return a.db.ReadTest()
+	val, err := store.Read[string](a.db, "data", "test")
+	if err != nil {
+		a.handleErr(err)
+	}
+	return val
 }
 
 func (a *App) WriteTest(value string) {
-	a.db.SetTest(value)
+	store.Set(a.db, "data", "test", value)
 }
 
 func (a *App) handleErr(err error) {

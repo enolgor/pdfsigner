@@ -18,12 +18,8 @@ export function Greet(arg1) {
   return window['go']['app']['App']['Greet'](arg1);
 }
 
-export function IsLocked() {
-  return window['go']['app']['App']['IsLocked']();
-}
-
-export function OpenDB(arg1) {
-  return window['go']['app']['App']['OpenDB'](arg1);
+export function IsStoreLocked() {
+  return window['go']['app']['App']['IsStoreLocked']();
 }
 
 export function ReadTest() {
@@ -44,6 +40,10 @@ export function Settings() {
 
 export function Translations() {
   return window['go']['app']['App']['Translations']();
+}
+
+export function UnlockStore(arg1) {
+  return window['go']['app']['App']['UnlockStore'](arg1);
 }
 
 export function WriteTest(arg1) {

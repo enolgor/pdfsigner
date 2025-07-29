@@ -10,7 +10,6 @@ import (
 var defaultSettings map[string]string = map[string]string{
 	"lang":  translations.DefaultLang,
 	"theme": "light",
-	"enc":   "",
 }
 
 type Settings struct {
