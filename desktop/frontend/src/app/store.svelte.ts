@@ -1,18 +1,25 @@
-import { IsStoreLocked, UnlockStore, ChangePassword, ReadTest, WriteTest } from '@go';
+import { IsStoreLocked, UnlockStore, ChangePassword, ReadTest, WriteTest, IsFirstRun, FirstRunCompleted, IsStoreProtected } from '@go';
 
 let locked : boolean = $state(true);
+let firstRun : boolean = $state(true);
+let _protected : boolean = $state(false);
 
 export async function initialize() {
   locked = await IsStoreLocked();
-  console.log("store is locked", $state.snapshot(locked))
+  firstRun = await IsFirstRun();
+  _protected = await IsStoreProtected();
 }
 
-export async function unlock(password: string = "") {
+export async function unlock(password: string = "", onunlock : () => void = () => {}) {
   if (!locked) {
     return;
   }
   await UnlockStore(password);
   locked = await IsStoreLocked();
+  if (!locked) {
+    onunlock();
+  }
+  _protected = await IsStoreProtected();
 }
 
 export async function changePassword(password: string = "") {
@@ -20,6 +27,7 @@ export async function changePassword(password: string = "") {
     return;
   }
   await ChangePassword(password);
+   _protected = await IsStoreProtected();
 }
 
 async function readTest() {
@@ -34,8 +42,18 @@ export default {
   get locked() {
     return locked;
   },
+  get protected() {
+    return _protected;
+  },
   readTest,
   writeTest,
   changePassword,
   unlock,
+  get firstRun() {
+    return firstRun;
+  },
+  firstRunCompleted: async () : Promise<void> => {
+    await FirstRunCompleted();
+    firstRun = await IsFirstRun();
+  }
 }

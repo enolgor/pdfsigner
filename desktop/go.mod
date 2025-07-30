@@ -8,6 +8,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0
 	github.com/goforj/godump v1.5.0
 	github.com/kaptinlin/go-i18n v0.1.4
+	github.com/rotisserie/eris v0.5.4
 	github.com/wailsapp/wails/v2 v2.10.2
 	golang.org/x/crypto v0.40.0
 )
@@ -33,7 +34,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.5.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/rotisserie/eris v0.5.4 // indirect
 	github.com/samber/lo v1.49.1 // indirect
 	github.com/tkrajina/go-reflector v0.5.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

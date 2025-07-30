@@ -6,6 +6,10 @@ export function ChangePassword(arg1) {
   return window['go']['app']['App']['ChangePassword'](arg1);
 }
 
+export function FirstRunCompleted() {
+  return window['go']['app']['App']['FirstRunCompleted']();
+}
+
 export function GetFallbackLang() {
   return window['go']['app']['App']['GetFallbackLang']();
 }
@@ -18,8 +22,16 @@ export function Greet(arg1) {
   return window['go']['app']['App']['Greet'](arg1);
 }
 
+export function IsFirstRun() {
+  return window['go']['app']['App']['IsFirstRun']();
+}
+
 export function IsStoreLocked() {
   return window['go']['app']['App']['IsStoreLocked']();
+}
+
+export function IsStoreProtected() {
+  return window['go']['app']['App']['IsStoreProtected']();
 }
 
 export function ReadTest() {

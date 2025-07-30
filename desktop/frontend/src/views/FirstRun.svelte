@@ -1,22 +1,39 @@
 <script lang="ts">
-    import {
-    Content,
-    Grid,
-    Row,
-    Column,
-  } from "carbon-components-svelte";
-  interface Props {
+  import { _ } from 'svelte-i18n';
+  import firstrun from './first-run/firstrun.svelte';
+  import Base from "./first-run/Base.svelte";
+  import store from '@src/app/store.svelte';
+  import settings from "@src/app/settings.svelte";
+  import { LanguageSelector } from '@src/components/index';
+  import MasterPassword from './first-run/MasterPassword.svelte';
 
-  }
-  let {} : Props = $props();
+  let password : string = $state('');
+
+  firstrun.steps = 4;
+  $effect(() => {
+    if (firstrun.done) {
+      settings.save()
+        .then(store.firstRunCompleted)
+        .then(() => store.changePassword(password)).catch((err) => {
+        console.error(err);
+      });
+    }
+  });
+
 </script>
 
-<Content>
-  <Grid>
-    <Row>
-      <Column>
-        <h1>TODO // FirstRun</h1>
-      </Column>
-    </Row>
-  </Grid>
-</Content>
+{#if firstrun.step === 0}
+  <Base title={$_("first-run.intro.title")} primary={$_("next")} >
+    <p>{$_("first-run.intro.setup")}</p>
+  </Base>
+  {:else if firstrun.step === 1}
+  <Base title={$_("first-run.language.title")} primary={$_("next")} >
+    <LanguageSelector />
+  </Base>
+  {:else if firstrun.step === 2}
+  <MasterPassword bind:password />
+  {:else if firstrun.step === 3}
+  <Base title={$_("first-run.done.title")} primary={$_("proceed")} >
+    <p>{$_("first-run.done.allset")}</p>
+  </Base>
+{/if}

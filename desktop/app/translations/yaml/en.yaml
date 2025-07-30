@@ -1,13 +1,53 @@
 ---
 certificates: "Certificates"
+set-master-password: "Set master password"
+change-master-password: "Change master password"
 choose-an-option: "Choose an option"
+enable-darkmode: "Enable dark mode"
+first-run:
+  done:
+    allset: "Configuration completed, you are now ready to sign your first pdf!"
+    title: "All done"
+  intro:
+    setup: "Let's setup your initial configuration!"
+    title: "Welcome to PDFSigner"
+  language:
+    title: "Setup language"
+  master-password:
+    risk: "I understand the risk, proceed without a master password"
+    title: "Setup your master password"
 help: "Help"
+initial-setup: "Initial setup"
+invalid-password: "Invalid password"
 lang:
   en: "English"
-  es: "Spanish"
+  es: "Español"
 language: "Language"
+master-password-form:
+  info-1: "Leave it empty if you trust this computer (not recommended)"
+  info-2: "You currently do not have a password set, this is not recommended"
+  label-1: "Password"
+  label-2: "Retype your password"
+  nomatch: "Your passwords do not match"
+  placeholder-1: "Enter password"
+  placeholder-2: "Enter your password again"
+  risk: "I understand the risk, proceed without a master password"
+  strength:
+    label: "Password strength: {strength}"
+    strong: "Strong"
+    very-strong: "Very strong"
+    very-weak: "Very weak"
+    weak: "Weak"
+master-password:
+  invalid: "Invalid password"
+  label: "Application is locked, please enter your master password"
+  placeholder: "Enter your password"
+next: "Next"
+proceed: "Proceed"
+save: "Save"
+set-new-password: "Set new password"
 settings: "Settings"
 signpdf: "Sign PDF"
 stamps: "Stamps"
-save: "Save"
-enable-darkmode: "Enable dark mode"
+unlock: "Unlock"
+unset-master-password: "Unset password"

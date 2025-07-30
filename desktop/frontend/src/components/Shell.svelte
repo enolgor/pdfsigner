@@ -15,12 +15,12 @@
 
   interface Props {
     emptyShell?: boolean,
-    content: () => ReturnType<Snippet>,
+    children: Snippet,
   }
 
   let {
     emptyShell = false,
-    content
+    children
   } : Props = $props();
 
   let isSideNavOpen : boolean = $state(false);
@@ -60,4 +60,4 @@
   {/if}
 </Header>
 
-{@render content()}
+{@render children()}

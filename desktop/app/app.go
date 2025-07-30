@@ -24,6 +24,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -70,8 +71,10 @@ func (a *App) Startup(ctx context.Context) {
 	if a.db, err = store.New(path.Join(a.dataDir, "data")); err != nil {
 		a.handleErr(err)
 	}
-	if _, ok := a.db.ReadFlag("first-run"); !ok {
-		a.db.SetFlag("first-run", "true")
+	if _, err := a.db.Flags().Get("first-run"); err != nil {
+		if store.IsNotExist(err) {
+			a.db.Flags().Set("first-run", true)
+		}
 	}
 }
 
@@ -111,22 +114,26 @@ func (a *App) IsStoreLocked() bool {
 	return a.db.IsLocked()
 }
 
-func (a *App) UnlockStore(password string) {
+func (a *App) UnlockStore(password string) error {
 	if err := a.db.Unlock(password); err != nil {
+		if store.IsInvalidPassword(err) {
+			return errors.New(t("master-password.invalid"))
+		}
 		a.handleErr(err)
-		return
+		return nil
 	}
+	return nil
 }
 
 func (a *App) ChangePassword(new string) {
-	if err := a.db.ReencryptDB(new); err != nil {
+	if err := a.db.Reencrypt(new); err != nil {
 		a.handleErr(err)
 		return
 	}
 }
 
 func (a *App) ReadTest() string {
-	val, err := store.Read[string](a.db, "data", "test")
+	val, err := a.db.TestBucket().Get("test")
 	if err != nil {
 		a.handleErr(err)
 	}
@@ -134,16 +141,27 @@ func (a *App) ReadTest() string {
 }
 
 func (a *App) WriteTest(value string) {
-	store.Set(a.db, "data", "test", value)
+	if err := a.db.TestBucket().Set("test", value); err != nil {
+		a.handleErr(err)
+	}
 }
 
 func (a *App) IsFirstRun() bool {
-	v, _ := a.db.ReadFlag("first-run")
-	return v == "true"
+	value, err := a.db.Flags().Get("first-run")
+	if err != nil {
+		a.handleErr(err)
+	}
+	return value
 }
 
 func (a *App) FirstRunCompleted() {
-	a.db.SetFlag("first-run", "false")
+	if err := a.db.Flags().Set("first-run", false); err != nil {
+		a.handleErr(err)
+	}
+}
+
+func (a *App) IsStoreProtected() bool {
+	return a.db.IsProtected()
 }
 
 func (a *App) handleErr(err error) {

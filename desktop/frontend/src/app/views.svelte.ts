@@ -3,8 +3,6 @@ export enum views {
   certificates = 'certificates',
   stamps = 'stamps',
   sign = 'sign',
-  firstRun = 'first-run',
-  locked = 'locked',
   loading = 'loading',
   help = 'help',
 }

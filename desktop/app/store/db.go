@@ -7,16 +7,18 @@ import (
 	"github.com/rotisserie/eris"
 )
 
-var ErrItemNotExist error = eris.New("item does not exist")
 var ErrDatabaseLocked error = eris.New("database is locked")
-var ErrItemDecode error = eris.New("item could not be decoded")
+var ErrInvalidPassword error = eris.New("invalid password")
 
 type DB struct {
-	locked   bool
-	cipher   Cipher
-	store    *persist.Store
-	data     map[string]*persist.PersistMap[Encrypted[any]]
-	internal *persist.PersistMap[string]
+	store      *persist.Store
+	internal   Bucket[string]
+	canary     EncryptedBucket[[]byte]
+	flags      Bucket[bool]
+	testBucket EncryptedBucket[string]
+	protected  bool
+
+	locked bool
 }
 
 func New(path string) (db *DB, err error) {
@@ -27,52 +29,73 @@ func New(path string) (db *DB, err error) {
 	if err = store.StartAutoShrink(time.Minute, 2); err != nil {
 		return
 	}
-	db = &DB{
-		store: store,
-		data:  make(map[string]*persist.PersistMap[Encrypted[any]]),
-	}
-	if db.internal, err = persist.Map[string](db.store, "$"); err != nil {
+	db = &DB{store: store}
+	if db.internal, err = NewBucket[string](store, "$internal"); err != nil {
 		return
 	}
-	salt, ok := db.internal.Get("salt")
-	db.locked = ok && salt != ""
+	if db.flags, err = NewBucket[bool](store, "flags"); err != nil {
+		return
+	}
+	if db.testBucket, err = NewEncryptedBucket[string](store, "data"); err != nil {
+		return
+	}
+	if db.canary, err = NewEncryptedBucket[[]byte](store, "$canary"); err != nil {
+		return
+	}
+	salt, _ := db.internal.Get("salt")
+	db.locked = salt != ""
+	db.protected = salt != ""
 	if !db.locked {
-		db.cipher = NewNopCipher()
+		db.Unlock("")
 	}
 	err = db.store.Shrink()
 	return
 }
 
-func (db *DB) ReadFlag(key string) (string, bool) {
-	return db.internal.Get(key)
+func (db *DB) Flags() Bucket[bool] {
+	return db.flags
 }
 
-func (db *DB) SetFlag(key, value string) {
-	db.internal.Set(key, value)
+func (db *DB) TestBucket() Bucket[string] {
+	return db.testBucket
 }
 
 func (db *DB) Unlock(password string) (err error) {
-	if !db.locked {
-		return
+	var cipher Cipher
+	if password != "" {
+		var salt string
+		var key []byte
+		if salt, err = db.internal.Get("salt"); err != nil {
+			return
+		}
+		if key, _, err = Derive(password, salt); err != nil {
+			return
+		}
+		if cipher, err = NewAESGCMCipher(key); err != nil {
+			return
+		}
+		db.protected = true
+	} else {
+		cipher = NewNopCipher()
+		db.protected = false
 	}
-	var salt string
-	var ok bool
-	var key []byte
-	if salt, ok = db.internal.Get("salt"); !ok {
-		err = eris.Wrap(ErrItemNotExist, "salt not found")
-		return
-	}
-	if key, _, err = Derive(password, salt); err != nil {
-		return
-	}
-	if db.cipher, err = NewAESGCMCipher(key); err != nil {
-		return
+	db.testBucket.Unlock(cipher)
+	db.canary.Unlock(cipher)
+	if _, err := db.canary.Get("canary"); err != nil {
+		if IsNotExist(err) {
+			rng, _ := randomBytes(16)
+			if err = db.canary.Set("canary", rng); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidPassword
+		}
 	}
 	db.locked = false
 	return
 }
 
-func (db *DB) ReencryptDB(password string) (err error) {
+func (db *DB) Reencrypt(password string) (err error) {
 	if db.locked {
 		return ErrDatabaseLocked
 	}
@@ -80,6 +103,7 @@ func (db *DB) ReencryptDB(password string) (err error) {
 	if password == "" {
 		newcipher = NewNopCipher()
 		db.internal.Set("salt", "")
+		db.protected = false
 	} else {
 		var key []byte
 		var salt string
@@ -90,105 +114,15 @@ func (db *DB) ReencryptDB(password string) (err error) {
 		if newcipher, err = NewAESGCMCipher(key); err != nil {
 			return
 		}
+		db.protected = true
 	}
-	for _, pmap := range db.data {
-		if err = rangeReencrypt(pmap, db.cipher, newcipher); err != nil {
-			return
-		}
+	if err = db.testBucket.Reencrypt(newcipher); err != nil {
+		return
 	}
-	db.cipher = newcipher
+	if err = db.canary.Reencrypt(newcipher); err != nil {
+		return
+	}
 	err = db.store.Shrink()
-	return
-}
-
-func rangeReencrypt[T any](pmap *persist.PersistMap[Encrypted[T]], old, new Cipher) (err error) {
-	pmap.Range(func(key string, item Encrypted[T]) bool {
-		if err = item.Open(old); err != nil {
-			return false
-		}
-		if err = item.Seal(new); err != nil {
-			return false
-		}
-		pmap.Set(key, item)
-		return true
-	})
-	return
-}
-
-func Read[T any](db *DB, bucket, key string) (t T, err error) {
-	var pmap *persist.PersistMap[Encrypted[any]]
-	var ok bool
-	if pmap, err = db.GetBucket(bucket); err != nil {
-		return
-	}
-	item, found := pmap.Get(key)
-	if !found {
-		err = eris.Wrapf(ErrItemNotExist, "item %s/%s not found", bucket, key)
-		return
-	}
-	if err = item.Open(db.cipher); err != nil {
-		return
-	}
-	if t, ok = (*item.Value).(T); !ok {
-		err = eris.Wrapf(ErrItemDecode, "wrong type for item %s/%s", bucket, key)
-	}
-	return
-}
-
-func Set(db *DB, bucket, key string, val any) (err error) {
-	var pmap *persist.PersistMap[Encrypted[any]]
-	if pmap, err = db.GetBucket(bucket); err != nil {
-		return
-	}
-	item := NewEncrypted(&val)
-	if err = item.Seal(db.cipher); err != nil {
-		return
-	}
-	pmap.Set(key, item)
-	return
-}
-
-func All[T any](db *DB, bucket string) (all []T, err error) {
-	var pmap *persist.PersistMap[Encrypted[any]]
-	if pmap, err = db.GetBucket(bucket); err != nil {
-		return
-	}
-	all = []T{}
-	var ok bool
-	pmap.Range(func(key string, item Encrypted[any]) bool {
-		if err = item.Open(db.cipher); err != nil {
-			return false
-		}
-		var t T
-		if t, ok = (*item.Value).(T); !ok {
-			err = eris.Wrapf(ErrItemDecode, "wrong type for item %s/%s", bucket, key)
-			return false
-		}
-		all = append(all, t)
-		return true
-	})
-	return
-}
-
-func Delete(db *DB, bucket, key string) (err error) {
-	var pmap *persist.PersistMap[Encrypted[any]]
-	if pmap, err = db.GetBucket(bucket); err != nil {
-		return
-	}
-	if found := pmap.Delete(key); !found {
-		err = eris.Wrapf(ErrItemNotExist, "item %s/%s not found", bucket, key)
-	}
-	return
-}
-
-func (db *DB) GetBucket(bucket string) (pmap *persist.PersistMap[Encrypted[any]], err error) {
-	var ok bool
-	if pmap, ok = db.data[bucket]; !ok {
-		if pmap, err = persist.Map[Encrypted[any]](db.store, bucket); err != nil {
-			return
-		}
-		db.data[bucket] = pmap
-	}
 	return
 }
 
@@ -200,6 +134,14 @@ func (db *DB) Close() error {
 	return db.store.Close()
 }
 
+func (db *DB) IsProtected() bool {
+	return db.protected
+}
+
 func IsNotExist(err error) bool {
 	return eris.Is(err, ErrItemNotExist)
+}
+
+func IsInvalidPassword(err error) bool {
+	return eris.Is(err, ErrInvalidPassword)
 }

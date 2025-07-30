@@ -3,13 +3,19 @@
 
 export function ChangePassword(arg1:string):Promise<void>;
 
+export function FirstRunCompleted():Promise<void>;
+
 export function GetFallbackLang():Promise<string>;
 
 export function GetLang():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function IsFirstRun():Promise<boolean>;
+
 export function IsStoreLocked():Promise<boolean>;
+
+export function IsStoreProtected():Promise<boolean>;
 
 export function ReadTest():Promise<string>;
 

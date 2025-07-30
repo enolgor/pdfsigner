@@ -1,11 +1,51 @@
 ---
 certificates: "Certificados"
+change-master-password: "Cambiar contraseña maestra"
 choose-an-option: "Elige una opción"
+enable-darkmode: "Activar el modo oscuro"
+first-run:
+  done:
+    allset: "Configuración completada, ¡ya está listo para firmar su primer pdf!"
+    title: "Todo listo"
+  intro:
+    setup: "¡Vamos a ajustar tu configuración inicial!"
+    title: "Bienvenido a PDFSigner"
+  language:
+    title: "Ajustar idioma"
+  master-password:
+    risk: "Entiendo el riesgo, proceder sin una contraseña maestra"
+    title: "Configura tu contraseña maestra"
 help: "Ayuda"
+initial-setup: "Ajustes iniciales"
+invalid-password: "Contraseña inválida"
 lang:
   en: "Inglés"
   es: "Español"
 language: "Idioma"
+master-password-form:
+  info: "Déjelo vacío si confía en este ordenador (no recomendado)"
+  label-1: "Contraseña"
+  label-2: "Vuelva a escribir su contraseña"
+  nomatch: "Sus contraseñas no coinciden"
+  placeholder-1: "Introduzca la contraseña"
+  placeholder-2: "Vuelva a introducir su contraseña"
+  risk: "Entiendo el riesgo, proceder sin una contraseña maestra"
+  strength:
+    label: "Fuerza de la contraseña: {strength}"
+    strong: "Fuerte"
+    very-strong: "Muy fuerte"
+    very-weak: "Muy débil"
+    weak: "Débil"
+master-password:
+  invalid: "Contraseña inválida"
+  label: "La aplicación está bloqueada, introduzca su contraseña maestra"
+  placeholder: "Introduzca su contraseña"
+next: "Siguiente"
+proceed: "Proceder"
+save: "Guardar"
+set-new-password: "Establecer nueva contraseña"
 settings: "Ajustes"
 signpdf: "Firmar PDF"
 stamps: "Sellos"
+unlock: "Desbloquear"
+unset-master-password: "Quitar contraseña"
