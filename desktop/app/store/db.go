@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Jipok/go-persist"
+	"github.com/enolgor/pdfsigner/desktop/app/signer"
 	"github.com/rotisserie/eris"
 )
 
@@ -16,6 +17,7 @@ type DB struct {
 	canary     EncryptedBucket[[]byte]
 	flags      Bucket[bool]
 	testBucket EncryptedBucket[string]
+	certs      EncryptedBucket[signer.StoredCertificate]
 	protected  bool
 
 	locked bool
@@ -39,6 +41,9 @@ func New(path string) (db *DB, err error) {
 	if db.testBucket, err = NewEncryptedBucket[string](store, "data"); err != nil {
 		return
 	}
+	if db.certs, err = NewEncryptedBucket[signer.StoredCertificate](store, "certs"); err != nil {
+		return
+	}
 	if db.canary, err = NewEncryptedBucket[[]byte](store, "$canary"); err != nil {
 		return
 	}
@@ -58,6 +63,10 @@ func (db *DB) Flags() Bucket[bool] {
 
 func (db *DB) TestBucket() Bucket[string] {
 	return db.testBucket
+}
+
+func (db *DB) Certs() Bucket[signer.StoredCertificate] {
+	return db.certs
 }
 
 func (db *DB) Unlock(password string) (err error) {
@@ -80,6 +89,7 @@ func (db *DB) Unlock(password string) (err error) {
 		db.protected = false
 	}
 	db.testBucket.Unlock(cipher)
+	db.certs.Unlock(cipher)
 	db.canary.Unlock(cipher)
 	if _, err := db.canary.Get("canary"); err != nil {
 		if IsNotExist(err) {
@@ -117,6 +127,9 @@ func (db *DB) Reencrypt(password string) (err error) {
 		db.protected = true
 	}
 	if err = db.testBucket.Reencrypt(newcipher); err != nil {
+		return
+	}
+	if err = db.certs.Reencrypt(newcipher); err != nil {
 		return
 	}
 	if err = db.canary.Reencrypt(newcipher); err != nil {
