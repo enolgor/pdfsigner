@@ -1,6 +1,8 @@
 <script lang="ts">
   import { _ } from 'svelte-i18n';
   import Base from "./Base.svelte";
+  import FileDrop from '@src/components/FileDrop.svelte';
+  
 </script>
 
 <Base
@@ -8,5 +10,5 @@
   primary={$_("next")}
   hasForm
 >
-  <div style="width: 100%; height: 500px;">Drop your certificate here</div>
+  <FileDrop />
 </Base>

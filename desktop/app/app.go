@@ -33,6 +33,7 @@ import (
 	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/goforj/godump"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 var t = translations.Translate
@@ -162,6 +163,10 @@ func (a *App) FirstRunCompleted() {
 
 func (a *App) IsStoreProtected() bool {
 	return a.db.IsProtected()
+}
+
+func (a *App) OpenFileDialog(info, extensions string) {
+	runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
 }
 
 func (a *App) handleErr(err error) {
