@@ -17,6 +17,8 @@ export function IsStoreLocked():Promise<boolean>;
 
 export function IsStoreProtected():Promise<boolean>;
 
+export function OpenFileDialog(arg1:string,arg2:string):Promise<void>;
+
 export function ReadTest():Promise<string>;
 
 export function SaveSettings(arg1:Record<string, string>):Promise<Record<string, string>>;

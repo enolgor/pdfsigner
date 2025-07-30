@@ -34,6 +34,10 @@ export function IsStoreProtected() {
   return window['go']['app']['App']['IsStoreProtected']();
 }
 
+export function OpenFileDialog(arg1, arg2) {
+  return window['go']['app']['App']['OpenFileDialog'](arg1, arg2);
+}
+
 export function ReadTest() {
   return window['go']['app']['App']['ReadTest']();
 }
