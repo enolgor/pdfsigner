@@ -9,6 +9,10 @@
     FormGroup,
     Button,
     PasswordInput,
+    ComposedModal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
   } from "carbon-components-svelte";
   import store from '@src/app/store.svelte';
   import { views, controller } from "@src/app/views.svelte";
@@ -28,23 +32,18 @@
   }
 </script>
 
-<Content>
-  <Grid>
-    <Row>
-      <Column>
-        <Form>
-          <FormGroup>
-            <PasswordInput
+<ComposedModal open preventCloseOnClickOutside size="xs">
+  <ModalHeader title={$_("master-password.title")} closeClass="first-run-hidden" />
+  <ModalBody style="overflow: hidden;">
+    <PasswordInput
               bind:value={password}
               labelText={$_("master-password.label")}
               placeholder={$_("master-password.placeholder")}
               invalid={passwordInvalid}
               invalidText={passwordInvalidText}
             />
-          </FormGroup>
-        </Form>
-        <Button onclick={unlock} icon={Unlocked}>{$_("unlock")}</Button>
-      </Column>
-    </Row>
-  </Grid>
-</Content>
+  </ModalBody>
+  <ModalFooter>
+    <Button onclick={unlock} icon={Unlocked}>{$_("unlock")}</Button>
+  </ModalFooter>
+</ComposedModal>

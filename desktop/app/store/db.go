@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Jipok/go-persist"
-	"github.com/enolgor/pdfsigner/desktop/app/signer"
+	"github.com/enolgor/pdfsigner/desktop/app/certs"
 	"github.com/rotisserie/eris"
 )
 
@@ -13,11 +13,12 @@ var ErrInvalidPassword error = eris.New("invalid password")
 
 type DB struct {
 	store      *persist.Store
+	sequence   *persist.PersistMap[Sequence]
 	internal   Bucket[string]
 	canary     EncryptedBucket[[]byte]
 	flags      Bucket[bool]
 	testBucket EncryptedBucket[string]
-	certs      EncryptedBucket[signer.StoredCertificate]
+	certs      EncryptedBucket[certs.StoredCertificate]
 	protected  bool
 
 	locked bool
@@ -32,19 +33,22 @@ func New(path string) (db *DB, err error) {
 		return
 	}
 	db = &DB{store: store}
-	if db.internal, err = NewBucket[string](store, "$internal"); err != nil {
+	if db.sequence, err = persist.Map[Sequence](store, "$sequence"); err != nil {
 		return
 	}
-	if db.flags, err = NewBucket[bool](store, "flags"); err != nil {
+	if db.internal, err = NewBucket[string](store, "$internal", db.sequence); err != nil {
 		return
 	}
-	if db.testBucket, err = NewEncryptedBucket[string](store, "data"); err != nil {
+	if db.flags, err = NewBucket[bool](store, "flags", db.sequence); err != nil {
 		return
 	}
-	if db.certs, err = NewEncryptedBucket[signer.StoredCertificate](store, "certs"); err != nil {
+	if db.testBucket, err = NewEncryptedBucket[string](store, "data", db.sequence); err != nil {
 		return
 	}
-	if db.canary, err = NewEncryptedBucket[[]byte](store, "$canary"); err != nil {
+	if db.certs, err = NewEncryptedBucket[certs.StoredCertificate](store, "certs", db.sequence); err != nil {
+		return
+	}
+	if db.canary, err = NewEncryptedBucket[[]byte](store, "$canary", db.sequence); err != nil {
 		return
 	}
 	salt, _ := db.internal.Get("salt")
@@ -65,7 +69,7 @@ func (db *DB) TestBucket() Bucket[string] {
 	return db.testBucket
 }
 
-func (db *DB) Certs() Bucket[signer.StoredCertificate] {
+func (db *DB) Certs() Bucket[certs.StoredCertificate] {
 	return db.certs
 }
 

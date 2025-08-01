@@ -6,9 +6,11 @@
   import settings from "@src/app/settings.svelte";
   import { LanguageSelector } from '@src/components/index';
   import MasterPassword from './first-run/MasterPassword.svelte';
-    import Certificate from './first-run/Certificate.svelte';
+  import Certificate from './first-run/Certificate.svelte';
 
   let password : string = $state('');
+
+
 
   firstrun.steps = 5;
   $effect(() => {
@@ -32,9 +34,9 @@
     <LanguageSelector />
   </Base>
   {:else if firstrun.step === 2}
-  <Certificate />
-  {:else if firstrun.step === 3}
   <MasterPassword bind:password />
+  {:else if firstrun.step === 3}
+  <Certificate />
   {:else if firstrun.step === 4}
   <Base title={$_("first-run.done.title")} primary={$_("proceed")} >
     <p>{$_("first-run.done.allset")}</p>

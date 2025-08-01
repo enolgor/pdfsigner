@@ -25,19 +25,25 @@ type Bucket[T any] interface {
 	Set(key string, value T) error
 	Delete(key string) error
 	All() ([]Entry[T], error)
+	Keys() []string
 }
 
 type bucket[T any] struct {
-	name string
-	pmap *persist.PersistMap[T]
+	name   string
+	pmap   *persist.PersistMap[T]
+	seqmap *persist.PersistMap[Sequence]
 }
 
-func NewBucket[T any](store *persist.Store, name string) (Bucket[T], error) {
+func NewBucket[T any](store *persist.Store, name string, seqmap *persist.PersistMap[Sequence]) (Bucket[T], error) {
 	pmap, err := persist.Map[T](store, name)
 	if err != nil {
 		return nil, err
 	}
-	return &bucket[T]{name, pmap}, nil
+	_, found := seqmap.Get(name)
+	if !found {
+		seqmap.Set(name, make(Sequence, 0))
+	}
+	return &bucket[T]{name, pmap, seqmap}, nil
 }
 
 func (b *bucket[T]) Get(key string) (T, error) {
@@ -50,6 +56,9 @@ func (b *bucket[T]) Get(key string) (T, error) {
 
 func (b *bucket[T]) Set(key string, value T) error {
 	b.pmap.Set(key, value)
+	sequence, _ := b.seqmap.Get(b.name)
+	sequence.Add(key)
+	b.seqmap.Set(b.name, sequence)
 	return nil
 }
 
@@ -57,7 +66,15 @@ func (b *bucket[T]) Delete(key string) error {
 	if ok := b.pmap.Delete(key); !ok {
 		return eris.Wrapf(ErrItemNotExist, "item %s/%s not found", b.name, key)
 	}
+	sequence, _ := b.seqmap.Get(b.name)
+	sequence.Remove(key)
+	b.seqmap.Set(b.name, sequence)
 	return nil
+}
+
+func (b *bucket[T]) Keys() []string {
+	sequence, _ := b.seqmap.Get(b.name)
+	return sequence
 }
 
 func (b *bucket[T]) All() ([]Entry[T], error) {
@@ -66,6 +83,8 @@ func (b *bucket[T]) All() ([]Entry[T], error) {
 		all = append(all, Entry[T]{key, t})
 		return true
 	})
+	sequence, _ := b.seqmap.Get(b.name)
+	sort(sequence, all)
 	return all, nil
 }
 
@@ -76,8 +95,8 @@ type encryptedBucket[T any] struct {
 	locked bool
 }
 
-func NewEncryptedBucket[T any](store *persist.Store, name string) (EncryptedBucket[T], error) {
-	bucket, err := NewBucket[Encrypted[T]](store, name)
+func NewEncryptedBucket[T any](store *persist.Store, name string, seqmap *persist.PersistMap[Sequence]) (EncryptedBucket[T], error) {
+	bucket, err := NewBucket[Encrypted[T]](store, name, seqmap)
 	if err != nil {
 		return nil, err
 	}
@@ -162,4 +181,8 @@ func (b *encryptedBucket[T]) Reencrypt(newcipher Cipher) error {
 
 func (b *encryptedBucket[T]) Locked() bool {
 	return b.locked
+}
+
+func (b *encryptedBucket[T]) Keys() []string {
+	return b.bucket.Keys()
 }

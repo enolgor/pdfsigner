@@ -10,6 +10,10 @@ export function FirstRunCompleted() {
   return window['go']['app']['App']['FirstRunCompleted']();
 }
 
+export function GetCertificateID(arg1, arg2) {
+  return window['go']['app']['App']['GetCertificateID'](arg1, arg2);
+}
+
 export function GetFallbackLang() {
   return window['go']['app']['App']['GetFallbackLang']();
 }
@@ -34,8 +38,8 @@ export function IsStoreProtected() {
   return window['go']['app']['App']['IsStoreProtected']();
 }
 
-export function OpenFileDialog(arg1, arg2) {
-  return window['go']['app']['App']['OpenFileDialog'](arg1, arg2);
+export function OpenFileDialog(arg1) {
+  return window['go']['app']['App']['OpenFileDialog'](arg1);
 }
 
 export function ReadTest() {
@@ -52,6 +56,10 @@ export function SetLang(arg1) {
 
 export function Settings() {
   return window['go']['app']['App']['Settings']();
+}
+
+export function StoreCertificate(arg1, arg2) {
+  return window['go']['app']['App']['StoreCertificate'](arg1, arg2);
 }
 
 export function Translations() {

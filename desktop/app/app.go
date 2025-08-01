@@ -29,6 +29,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/enolgor/pdfsigner/desktop/app/certs"
 	"github.com/enolgor/pdfsigner/desktop/app/settings"
 	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
@@ -165,8 +166,45 @@ func (a *App) IsStoreProtected() bool {
 	return a.db.IsProtected()
 }
 
-func (a *App) OpenFileDialog(info, extensions string) {
-	runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{})
+func (a *App) OpenFileDialog(extensions string) (string, error) {
+	filters := []runtime.FileFilter{}
+	if extensions != "" {
+		filters = append(filters, runtime.FileFilter{
+			DisplayName: extensions,
+			Pattern:     extensions,
+		})
+	}
+	return runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Filters: filters,
+	})
+}
+
+func (a *App) GetCertificateID(path, passphrase string) (id certs.StoredCertificateID, err error) {
+	fmt.Printf("trying to open %s \n", path)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		a.handleErr(err)
+		err = nil
+		return
+	}
+	var sc *certs.StoredCertificate
+	if sc, err = certs.NewStoredCertificate(data, passphrase); err != nil {
+		return
+	}
+	id = sc.StoredCertificateID
+	return
+}
+
+func (a *App) StoreCertificate(path, passphrase string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	sc, err := certs.NewStoredCertificate(data, passphrase)
+	if err != nil {
+		return err
+	}
+	return a.db.Certs().Set(fmt.Sprintf("%s / %s", sc.Subject, sc.Issuer), *sc)
 }
 
 func (a *App) handleErr(err error) {

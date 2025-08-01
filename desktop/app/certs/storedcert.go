@@ -1,12 +1,18 @@
-package signer
+package certs
 
-import "github.com/enolgor/pdfsigner/signer"
+import (
+	"github.com/enolgor/pdfsigner/signer"
+)
+
+type StoredCertificateID struct {
+	Issuer  string
+	Subject string
+}
 
 type StoredCertificate struct {
 	Passphrase string
 	Data       []byte
-	Issuer     string
-	Subject    string
+	StoredCertificateID
 }
 
 func NewStoredCertificate(data []byte, passphrase string) (*StoredCertificate, error) {
