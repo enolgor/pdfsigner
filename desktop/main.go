@@ -26,6 +26,7 @@ import (
 	"embed"
 
 	"github.com/enolgor/pdfsigner/desktop/app"
+	"github.com/enolgor/pdfsigner/desktop/app/stamps"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -55,6 +56,10 @@ func main() {
 		},
 		DragAndDrop: &options.DragAndDrop{
 			EnableFileDrop: true,
+		},
+		EnumBind: []interface{}{
+			stamps.AllRotations,
+			stamps.AllAlignments,
 		},
 	})
 

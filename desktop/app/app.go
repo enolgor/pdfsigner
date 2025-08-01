@@ -31,6 +31,7 @@ import (
 
 	"github.com/enolgor/pdfsigner/desktop/app/certs"
 	"github.com/enolgor/pdfsigner/desktop/app/settings"
+	"github.com/enolgor/pdfsigner/desktop/app/stamps"
 	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/goforj/godump"
@@ -226,6 +227,10 @@ func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, 
 	}
 	id = sc.StoredCertificateID
 	return
+}
+
+func (a *App) NewDefaultStampConfig() stamps.StampConfig {
+	return stamps.StampConfig{}
 }
 
 func (a *App) handleErr(err error) {

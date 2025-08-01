@@ -50,6 +50,10 @@ export function ListCertificates() {
   return window['go']['app']['App']['ListCertificates']();
 }
 
+export function NewDefaultStampConfig() {
+  return window['go']['app']['App']['NewDefaultStampConfig']();
+}
+
 export function OpenFileDialog(arg1) {
   return window['go']['app']['App']['OpenFileDialog'](arg1);
 }
