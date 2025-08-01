@@ -4,7 +4,7 @@ go 1.24.3
 
 require (
 	github.com/Jipok/go-persist v1.9.2
-	github.com/enolgor/pdfsigner/signer v1.0.1
+	github.com/enolgor/pdfsigner/signer v1.0.2
 	github.com/goccy/go-json v0.10.5
 	github.com/goccy/go-yaml v1.18.0
 	github.com/goforj/godump v1.5.0
@@ -18,7 +18,7 @@ require (
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/digitorus/pdf v0.1.2 // indirect
 	github.com/digitorus/pdfsign v0.0.0-20250724121027-6b5c244d0211 // indirect
-	github.com/digitorus/pkcs7 v0.0.0-20250725193350-cff5846e54e7 // indirect
+	github.com/digitorus/pkcs7 v0.0.0-20250730155240-ffadbf3f398c // indirect
 	github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea // indirect
 	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
