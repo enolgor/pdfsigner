@@ -34,27 +34,32 @@
       tooltipAlignment="start"
       icon={DocumentPdf}
       onclick={() => controller.view = views.sign}
+      isActive={controller.view === views.sign}
     />
     <HeaderGlobalAction
       iconDescription={$_("certificates")}
       icon={Certificate}
       onclick={() => controller.view = views.certificates}
+      isActive={controller.view === views.certificates}
     />
     <HeaderGlobalAction
       iconDescription={$_("stamps")}
       icon={Stamp}
       onclick={() => controller.view = views.stamps}
+      isActive={controller.view === views.stamps}
     />
     <HeaderGlobalAction
       iconDescription={$_("settings")}
       icon={SettingsAdjust}
       onclick={() => controller.view = views.settings}
+      isActive={controller.view === views.settings}
     />
     <HeaderGlobalAction
       iconDescription={$_("help")}
       tooltipAlignment="end"
       icon={Help}
       onclick={() => controller.view = views.help}
+      isActive={controller.view === views.help}
     />
   </HeaderUtilities>
   {/if}

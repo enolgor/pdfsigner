@@ -14,12 +14,13 @@
     Loading,
     Help,
   } from '@src/views';
+    import { Content } from 'carbon-components-svelte';
 
   let emptyShell : boolean = $derived(store.locked || store.firstRun);
 </script>
 
 {#await initialize()}
-  <Shell emptyShell><Loading /></Shell>
+  <Shell emptyShell><Content><Loading /></Content></Shell>
 {:then}
 {@const view = controller.view}
 <Shell {emptyShell}>

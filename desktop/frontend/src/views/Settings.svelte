@@ -57,6 +57,11 @@
   <Grid padding>
     <Row>
       <Column>
+        <h1>{$_("settings")}</h1>
+      </Column>
+    </Row>
+    <Row>
+      <Column>
         <Form>
           <FormGroup>
             <Select labelText={$_("language")} bind:selected={settings.settings.lang}>

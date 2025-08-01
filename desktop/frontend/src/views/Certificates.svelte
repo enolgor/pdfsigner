@@ -9,6 +9,7 @@
     ButtonSet,
     Button,
     Modal,
+    Tile,
   } from "carbon-components-svelte";
   import { onMount } from "svelte";
   import { ListCertificates, StoreCertificate, DeleteCertificate, SetDefaultCertificate, GetStoredCertificateID } from "@go";
@@ -64,19 +65,17 @@
     await init();
   }
 
-  function 
-
 </script>
 
+<Content>
 {#await init()}
 <Loading />
 {:then}
 <div class:hidden={open}>
-<Content>
   <Grid padding>
     <Row>
       <Column>
-        <h1>TODO // Certificates</h1>
+        <h1>{$_("certificates")}</h1>
       </Column>
     </Row>
     <Row>
@@ -87,28 +86,29 @@
     {#each certificates as cert, idx}
     <Row>
       <Column>
-        <ExpandableTile onclick={}>
+        {#if idx === 0}
+        <Tile>
+          <div>{cert}</div>
+          <br/><div>{$_("default-cert")}</div>
+        </Tile>
+        {:else}
+        <ExpandableTile>
           <div slot="above">
             <div>{cert}</div>
-            {#if idx === 0}
-            <br/><div>{$_("default-cert")}</div>
-            {/if}
           </div>
           <div slot="below">
             <br/>
             <ButtonSet>
-              {#if idx !== 0}
               <Button size="small" kind="tertiary" onclick={async () => await setDefaultCertificate(cert)}>{$_("set-default")}</Button>
               <Button size="small" kind="danger" onclick={async () => await deleteCertificate(cert)}>{$_("delete")}</Button>
-              {/if}
             </ButtonSet>
           </div>
         </ExpandableTile>
+         {/if}
       </Column>
     </Row>
     {/each}
   </Grid>
-</Content>
 </div>
 
 <div class:hidden={openPassword}>
@@ -129,6 +129,7 @@
 <CertPassphrase bind:open={openPassword} bind:passphrase {invalid} onModalClose={addCertificate.reset} unlockCertificate={addCertificate.unlockCertificate} />
 
 {/await}
+</Content>
 <style>
   .hidden {
     visibility: hidden;
