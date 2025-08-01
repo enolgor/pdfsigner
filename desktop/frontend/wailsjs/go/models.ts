@@ -92,7 +92,7 @@ export namespace stamps {
 	    rotate: config.Rotation;
 	    borderSizePt: number;
 	    borderColor: color.RGBA;
-	    logo?: number[];
+	    logo?: string;
 	    logoOpacity: number;
 	    logoGrayScale: boolean;
 	    logoAlignment: config.Alignment;

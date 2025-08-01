@@ -1,9 +1,7 @@
 package stamps
 
 import (
-	"bytes"
 	"image/color"
-	"image/png"
 
 	"github.com/enolgor/pdfsigner/signer/config"
 )
@@ -33,7 +31,7 @@ type StampConfig struct {
 	Rotate              Rotation   `json:"rotate"`
 	BorderSizePt        float64    `json:"borderSizePt"`
 	BorderColor         RGBA       `json:"borderColor"`
-	Logo                []byte     `json:"logo,omitempty"`
+	Logo                string     `json:"logo,omitempty"`
 	LogoOpacity         float64    `json:"logoOpacity"`
 	LogoGrayScale       bool       `json:"logoGrayScale"`
 	LogoAlignment       Alignment  `json:"logoAlignment"`
@@ -82,7 +80,7 @@ var AllAlignments = []struct {
 	{RIGHT, "RIGHT"},
 }
 
-func (sc *StampConfig) FromConfig(cfg config.SignatureConfiguration) (err error) {
+func (sc *StampConfig) FromConfig(cfg *config.SignatureConfiguration) (err error) {
 	sc.Title = cfg.Title
 	sc.DateFormat = cfg.DateFormat
 	sc.IncludeSubject = cfg.IncludeSubject
@@ -102,14 +100,14 @@ func (sc *StampConfig) FromConfig(cfg config.SignatureConfiguration) (err error)
 	sc.Rotate = cfg.Rotate
 	sc.BorderSizePt = cfg.BorderSizePt
 	sc.BorderColor = cfg.BorderColor
-	if cfg.Logo == nil || cfg.Logo.Image == nil {
-		sc.Logo = nil
+	if cfg.Logo == nil {
+		sc.Logo = ""
 	} else {
-		buff := new(bytes.Buffer)
-		if err = png.Encode(buff, cfg.Logo.Image); err != nil {
+		data, err := cfg.Logo.MarshalJSON()
+		if err != nil {
 			return err
 		}
-		sc.Logo = buff.Bytes()
+		sc.Logo = string(data)
 	}
 	sc.LogoOpacity = cfg.LogoOpacity
 	sc.LogoGrayScale = cfg.LogoGrayScale
@@ -128,6 +126,48 @@ func (sc *StampConfig) FromConfig(cfg config.SignatureConfiguration) (err error)
 	return
 }
 
-func (sc *StampConfig) ToConfig() *config.SignatureConfiguration {
-	return nil
+func (sc *StampConfig) ToConfig() (*config.SignatureConfiguration, error) {
+	cfg := &config.SignatureConfiguration{}
+	cfg.Title = sc.Title
+	cfg.DateFormat = sc.DateFormat
+	cfg.IncludeSubject = sc.IncludeSubject
+	cfg.IncludeIssuer = sc.IncludeIssuer
+	cfg.IncludeDate = sc.IncludeDate
+	cfg.SubjectKey = sc.SubjectKey
+	cfg.IssuerKey = sc.IssuerKey
+	cfg.DateKey = sc.DateKey
+	cfg.ExtraLines = sc.ExtraLines
+	cfg.Dpi = sc.Dpi
+	cfg.BackgroundColor = sc.BackgroundColor
+	cfg.WidthPt = sc.WidthPt
+	cfg.HeightPt = sc.HeightPt
+	cfg.PosXPt = sc.PosXPt
+	cfg.PosYPt = sc.PosYPt
+	cfg.PosStrict = sc.PosStrict
+	cfg.Rotate = sc.Rotate
+	cfg.BorderSizePt = sc.BorderSizePt
+	cfg.BorderColor = sc.BorderColor
+	if sc.Logo == "" {
+		cfg.Logo = nil
+	} else {
+		ji := &config.JImage{}
+		if err := ji.UnmarshalJSON([]byte(sc.Logo)); err != nil {
+			return nil, err
+		}
+	}
+	cfg.LogoOpacity = sc.LogoOpacity
+	cfg.LogoGrayScale = sc.LogoGrayScale
+	cfg.LogoAlignment = sc.LogoAlignment
+	cfg.EmptyLineAfterTitle = sc.EmptyLineAfterTitle
+	cfg.TitleAlignment = sc.TitleAlignment
+	cfg.LineAlignment = sc.LineAlignment
+	cfg.KeyAlignment = sc.KeyAlignment
+	cfg.ValueAlignment = sc.ValueAlignment
+	cfg.TitleFont = sc.TitleFont
+	cfg.KeyFont = sc.KeyFont
+	cfg.ValueFont = sc.ValueFont
+	cfg.TitleColor = sc.TitleColor
+	cfg.KeyColor = sc.KeyColor
+	cfg.ValueColor = sc.ValueColor
+	return cfg, nil
 }

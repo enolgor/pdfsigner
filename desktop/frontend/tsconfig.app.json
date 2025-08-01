@@ -17,6 +17,7 @@
     "moduleDetection": "force",
     "paths": {
       "@go": ["./wailsjs/go/app/App"],
+      "@models": ["./wailsjs/go/models"],
       "@runtime": ["./wailsjs/runtime/runtime"],
       "@src/*": ["./src/*"],
     }

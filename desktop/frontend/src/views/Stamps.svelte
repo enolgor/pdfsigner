@@ -4,18 +4,33 @@
     Grid,
     Row,
     Column,
+    TextInput,
+    Button,
   } from "carbon-components-svelte";
+  import { onMount } from 'svelte';
+  import { stamps } from "@models";
+  import { NewDefaultStampConfig } from "@go";
+
+
   interface Props {
 
   }
   let {} : Props = $props();
+  let stamp : stamps.StampConfig = $state(new stamps.StampConfig());
+  onMount(async () => {
+    stamp = await NewDefaultStampConfig();
+    console.log($state.snapshot(stamp));
+  });
 </script>
 
 <Content>
   <Grid>
     <Row>
       <Column>
-        <h1>TODO // Stamps</h1>
+        <Button onclick={() => console.log($state.snapshot(stamp))}>Test</Button>
+      </Column>
+      <Column>
+        <TextInput bind:value={stamp.title} />
       </Column>
     </Row>
   </Grid>

@@ -34,6 +34,7 @@ import (
 	"github.com/enolgor/pdfsigner/desktop/app/stamps"
 	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
+	"github.com/enolgor/pdfsigner/signer/config"
 	"github.com/goforj/godump"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -230,7 +231,9 @@ func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, 
 }
 
 func (a *App) NewDefaultStampConfig() stamps.StampConfig {
-	return stamps.StampConfig{}
+	sc := stamps.StampConfig{}
+	sc.FromConfig(config.New())
+	return sc
 }
 
 func (a *App) handleErr(err error) {
