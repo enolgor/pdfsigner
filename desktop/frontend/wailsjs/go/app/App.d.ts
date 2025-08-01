@@ -20,6 +20,8 @@ export function IsStoreLocked():Promise<boolean>;
 
 export function IsStoreProtected():Promise<boolean>;
 
+export function ListCertificates():Promise<Array<string>>;
+
 export function OpenFileDialog(arg1:string):Promise<string>;
 
 export function ReadTest():Promise<string>;

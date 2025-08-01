@@ -26,7 +26,6 @@
         errMsg = $_("cant-drop-multiple");
         return;
       }
-      console.log("dropped ")
       const path = paths[0];
       if (extensions && extensions.length > 0) {
         if (extensions.find((ext) => path.endsWith(ext)) === undefined) {
@@ -48,6 +47,9 @@
     e.preventDefault();
     try {
       const path = await OpenFileDialog(nativeExtensions);
+      if (path === "") {
+        return;
+      }
       errMsg = "";
       filename = path.split(/[/\\]/).pop() || "";
       onFileChosen(path);

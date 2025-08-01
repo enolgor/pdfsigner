@@ -207,6 +207,10 @@ func (a *App) StoreCertificate(path, passphrase string) error {
 	return a.db.Certs().Set(fmt.Sprintf("%s / %s", sc.Subject, sc.Issuer), *sc)
 }
 
+func (a *App) ListCertificates() []string {
+	return a.db.Certs().Keys()
+}
+
 func (a *App) handleErr(err error) {
 	fmt.Printf("error: %s\n", err.Error()) //TODO
 }
