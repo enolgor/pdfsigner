@@ -73,12 +73,8 @@ func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Wr
 	if conf == nil {
 		conf = config.New()
 	}
-	if err = parseTextTemplates(cert, date, conf); err != nil {
-		err = eris.Wrap(err, "failed to parse text templates")
-		return
-	}
 	imageData := new(bytes.Buffer)
-	if err = drawPngImage(imageData, date, cert, conf); err != nil {
+	if err = DrawPngImage(imageData, date, cert, conf); err != nil {
 		return
 	}
 	if conf.AddPage != nil {
@@ -93,7 +89,11 @@ func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Wr
 	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, getAppearance(imageData.Bytes(), conf), opts))
 }
 
-func drawPngImage(buff *bytes.Buffer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
+func DrawPngImage(buff *bytes.Buffer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
+	if err = parseTextTemplates(cert, date, conf); err != nil {
+		err = eris.Wrap(err, "failed to parse text templates")
+		return
+	}
 	text := getTextLines(date, cert, conf)
 	if len(text) == 0 && conf.Title == "" {
 		err = eris.New("no text to draw")
