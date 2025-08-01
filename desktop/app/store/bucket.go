@@ -26,6 +26,7 @@ type Bucket[T any] interface {
 	Delete(key string) error
 	All() ([]Entry[T], error)
 	Keys() []string
+	Move(key string, pos int)
 }
 
 type bucket[T any] struct {
@@ -86,6 +87,11 @@ func (b *bucket[T]) All() ([]Entry[T], error) {
 	sequence, _ := b.seqmap.Get(b.name)
 	sort(sequence, all)
 	return all, nil
+}
+
+func (b *bucket[T]) Move(key string, pos int) {
+	sequence, _ := b.seqmap.Get(b.name)
+	sequence.Move(key, pos)
 }
 
 type encryptedBucket[T any] struct {
@@ -185,4 +191,8 @@ func (b *encryptedBucket[T]) Locked() bool {
 
 func (b *encryptedBucket[T]) Keys() []string {
 	return b.bucket.Keys()
+}
+
+func (b *encryptedBucket[T]) Move(key string, pos int) {
+	b.bucket.Move(key, pos)
 }

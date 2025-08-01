@@ -211,6 +211,23 @@ func (a *App) ListCertificates() []string {
 	return a.db.Certs().Keys()
 }
 
+func (a *App) DeleteCertificate(key string) error {
+	return a.db.Certs().Delete(key)
+}
+
+func (a *App) SetDefaultCertificate(key string) {
+	a.db.Certs().Move(key, 0)
+}
+
+func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, err error) {
+	var sc certs.StoredCertificate
+	if sc, err = a.db.Certs().Get(key); err != nil {
+		return
+	}
+	id = sc.StoredCertificateID
+	return
+}
+
 func (a *App) handleErr(err error) {
 	fmt.Printf("error: %s\n", err.Error()) //TODO
 }

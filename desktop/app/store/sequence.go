@@ -17,6 +17,14 @@ func (seq *Sequence) Remove(s string) {
 	}
 }
 
+func (seq *Sequence) Move(s string, pos int) {
+	if pos < 0 || pos == len(*seq) {
+		return
+	}
+	idx := slices.Index(*seq, s)
+	(*seq)[idx], (*seq)[pos] = (*seq)[pos], (*seq)[idx]
+}
+
 func sort[T any](seq Sequence, entries []Entry[T]) {
 	slices.SortFunc(entries, func(a, b Entry[T]) int {
 		idx1 := slices.Index(seq, a.Key)

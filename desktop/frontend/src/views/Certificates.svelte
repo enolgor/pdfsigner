@@ -11,9 +11,10 @@
     Modal,
   } from "carbon-components-svelte";
   import { onMount } from "svelte";
-  import { ListCertificates, StoreCertificate } from "@go";
+  import { ListCertificates, StoreCertificate, DeleteCertificate, SetDefaultCertificate, GetStoredCertificateID } from "@go";
   import Add from "carbon-icons-svelte/lib/Add.svelte";
-    import { AddCertificate, CertPassphrase } from "@src/components";
+  import { AddCertificate, CertPassphrase } from "@src/components";
+  import Loading from "./Loading.svelte";
   
   let certificates : string[] = $state([]);
 
@@ -26,9 +27,9 @@
 
   let addCertificate : AddCertificate | undefined = $state();
 
-  onMount(async () => {
+  async function init() {
     certificates = await ListCertificates();
-  });
+  }
 
   function onModalClose() {
     path = "";
@@ -43,13 +44,33 @@
   function onPrimary() {
     StoreCertificate(path, passphrase).then(() => {
       onModalClose();
-      return ListCertificates();
+      return init();
     }).catch((err) => {
-      console.error(err);
+      console.error(err); //TODO
     });
   }
+
+  async function deleteCertificate(key : string) {
+    try {
+      await DeleteCertificate(key);
+      await init();
+    } catch(err) {
+      console.error(err); //TODO
+    }
+  }
+
+  async function setDefaultCertificate(key: string) {
+    await SetDefaultCertificate(key);
+    await init();
+  }
+
+  function 
+
 </script>
 
+{#await init()}
+<Loading />
+{:then}
 <div class:hidden={open}>
 <Content>
   <Grid padding>
@@ -66,7 +87,7 @@
     {#each certificates as cert, idx}
     <Row>
       <Column>
-        <ExpandableTile>
+        <ExpandableTile onclick={}>
           <div slot="above">
             <div>{cert}</div>
             {#if idx === 0}
@@ -77,9 +98,9 @@
             <br/>
             <ButtonSet>
               {#if idx !== 0}
-              <Button size="small" kind="tertiary">{$_("set-default")}</Button>
+              <Button size="small" kind="tertiary" onclick={async () => await setDefaultCertificate(cert)}>{$_("set-default")}</Button>
+              <Button size="small" kind="danger" onclick={async () => await deleteCertificate(cert)}>{$_("delete")}</Button>
               {/if}
-              <Button size="small" kind="danger">{$_("delete")}</Button>
             </ButtonSet>
           </div>
         </ExpandableTile>
@@ -107,6 +128,7 @@
 
 <CertPassphrase bind:open={openPassword} bind:passphrase {invalid} onModalClose={addCertificate.reset} unlockCertificate={addCertificate.unlockCertificate} />
 
+{/await}
 <style>
   .hidden {
     visibility: hidden;

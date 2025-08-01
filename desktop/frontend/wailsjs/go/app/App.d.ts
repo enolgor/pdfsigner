@@ -4,6 +4,8 @@ import {certs} from '../models';
 
 export function ChangePassword(arg1:string):Promise<void>;
 
+export function DeleteCertificate(arg1:string):Promise<void>;
+
 export function FirstRunCompleted():Promise<void>;
 
 export function GetCertificateID(arg1:string,arg2:string):Promise<certs.StoredCertificateID>;
@@ -11,6 +13,8 @@ export function GetCertificateID(arg1:string,arg2:string):Promise<certs.StoredCe
 export function GetFallbackLang():Promise<string>;
 
 export function GetLang():Promise<string>;
+
+export function GetStoredCertificateID(arg1:string):Promise<certs.StoredCertificateID>;
 
 export function Greet(arg1:string):Promise<string>;
 
@@ -27,6 +31,8 @@ export function OpenFileDialog(arg1:string):Promise<string>;
 export function ReadTest():Promise<string>;
 
 export function SaveSettings(arg1:Record<string, string>):Promise<Record<string, string>>;
+
+export function SetDefaultCertificate(arg1:string):Promise<void>;
 
 export function SetLang(arg1:string):Promise<void>;
 

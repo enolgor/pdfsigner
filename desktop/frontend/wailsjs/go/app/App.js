@@ -6,6 +6,10 @@ export function ChangePassword(arg1) {
   return window['go']['app']['App']['ChangePassword'](arg1);
 }
 
+export function DeleteCertificate(arg1) {
+  return window['go']['app']['App']['DeleteCertificate'](arg1);
+}
+
 export function FirstRunCompleted() {
   return window['go']['app']['App']['FirstRunCompleted']();
 }
@@ -20,6 +24,10 @@ export function GetFallbackLang() {
 
 export function GetLang() {
   return window['go']['app']['App']['GetLang']();
+}
+
+export function GetStoredCertificateID(arg1) {
+  return window['go']['app']['App']['GetStoredCertificateID'](arg1);
 }
 
 export function Greet(arg1) {
@@ -52,6 +60,10 @@ export function ReadTest() {
 
 export function SaveSettings(arg1) {
   return window['go']['app']['App']['SaveSettings'](arg1);
+}
+
+export function SetDefaultCertificate(arg1) {
+  return window['go']['app']['App']['SetDefaultCertificate'](arg1);
 }
 
 export function SetLang(arg1) {
