@@ -89,7 +89,7 @@ func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Wr
 	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, getAppearance(imageData.Bytes(), conf), opts))
 }
 
-func DrawPngImage(buff *bytes.Buffer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
+func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
 	if err = parseTextTemplates(cert, date, conf); err != nil {
 		err = eris.Wrap(err, "failed to parse text templates")
 		return
@@ -117,7 +117,7 @@ func DrawPngImage(buff *bytes.Buffer, date time.Time, cert *UnlockedCertificate,
 	if conf.Rotate == config.ROTATE_90 || conf.Rotate == config.ROTATE_270 {
 		conf.HeightPt, conf.WidthPt = conf.WidthPt, conf.HeightPt
 	}
-	err = eris.Wrap(png.Encode(buff, image), "failed to encode image")
+	err = eris.Wrap(png.Encode(w, image), "failed to encode image")
 	return
 }
 
