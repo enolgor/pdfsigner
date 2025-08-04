@@ -2,6 +2,9 @@ package stamps
 
 import (
 	"image/color"
+	"image/png"
+	"os"
+	"path"
 
 	"github.com/enolgor/pdfsigner/signer/config"
 )
@@ -100,15 +103,7 @@ func (sc *StampConfig) FromConfig(cfg *config.SignatureConfiguration) (err error
 	sc.Rotate = cfg.Rotate
 	sc.BorderSizePt = cfg.BorderSizePt
 	sc.BorderColor = cfg.BorderColor
-	if cfg.Logo == nil {
-		sc.Logo = ""
-	} else {
-		data, err := cfg.Logo.MarshalJSON()
-		if err != nil {
-			return err
-		}
-		sc.Logo = string(data)
-	}
+	sc.Logo = ""
 	sc.LogoOpacity = cfg.LogoOpacity
 	sc.LogoGrayScale = cfg.LogoGrayScale
 	sc.LogoAlignment = cfg.LogoAlignment
@@ -126,7 +121,7 @@ func (sc *StampConfig) FromConfig(cfg *config.SignatureConfiguration) (err error
 	return
 }
 
-func (sc *StampConfig) ToConfig() (*config.SignatureConfiguration, error) {
+func (sc *StampConfig) ToConfig(logoDirs string) (*config.SignatureConfiguration, error) {
 	cfg := &config.SignatureConfiguration{}
 	cfg.Title = sc.Title
 	cfg.DateFormat = sc.DateFormat
@@ -150,8 +145,13 @@ func (sc *StampConfig) ToConfig() (*config.SignatureConfiguration, error) {
 	if sc.Logo == "" {
 		cfg.Logo = nil
 	} else {
-		ji := &config.JImage{}
-		if err := ji.UnmarshalJSON([]byte(sc.Logo)); err != nil {
+		f, err := os.Open(path.Join(logoDirs, sc.Logo))
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+		cfg.Logo = &config.JImage{}
+		if cfg.Logo.Image, err = png.Decode(f); err != nil {
 			return nil, err
 		}
 	}

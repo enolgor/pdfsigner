@@ -9,7 +9,7 @@
   } from "carbon-components-svelte";
   import { onMount } from 'svelte';
   import { stamps } from "@models";
-  import { NewDefaultStampConfig } from "@go";
+  import { NewDefaultStampConfig, SetUnsavedStamp } from "@go";
 
 
   interface Props {
@@ -21,6 +21,11 @@
     stamp = await NewDefaultStampConfig();
     console.log($state.snapshot(stamp));
   });
+
+
+  $effect(() => {
+    SetUnsavedStamp(stamp)
+  })
 </script>
 
 <Content>

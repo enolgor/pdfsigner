@@ -26,16 +26,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
+	"time"
 
 	"github.com/enolgor/pdfsigner/desktop/app/certs"
 	"github.com/enolgor/pdfsigner/desktop/app/settings"
 	"github.com/enolgor/pdfsigner/desktop/app/stamps"
 	"github.com/enolgor/pdfsigner/desktop/app/store"
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
+	"github.com/enolgor/pdfsigner/signer"
 	"github.com/enolgor/pdfsigner/signer/config"
-	"github.com/goforj/godump"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -43,17 +45,21 @@ var t = translations.Translate
 
 // App struct
 type App struct {
-	ctx      context.Context
-	appKey   string
-	settings *settings.Settings
-	dataDir  string
-	db       *store.DB
+	ctx          context.Context
+	appKey       string
+	settings     *settings.Settings
+	dataDir      string
+	db           *store.DB
+	unsavedStamp *stamps.StampConfig
+	Mux          *http.ServeMux
 }
 
 // NewApp creates a new App application struct
 func NewApp(appKey string) *App {
-	godump.Dump(translations.Translations)
-	return &App{appKey: appKey}
+	app := &App{appKey: appKey}
+	app.Mux = http.NewServeMux()
+	app.Mux.HandleFunc("/unsaved-stamp", app.serveUnsavedStamp)
+	return app
 }
 
 // startup is called when the app starts. The context is saved
@@ -221,6 +227,15 @@ func (a *App) SetDefaultCertificate(key string) {
 	a.db.Certs().Move(key, 0)
 }
 
+func (a *App) GetDefaultCertificate() (cert certs.StoredCertificate, err error) {
+	keys := a.db.Certs().Keys()
+	if len(keys) == 0 {
+		err = errors.New("no certificates") //TODO
+		return
+	}
+	return a.db.Certs().Get(keys[0])
+}
+
 func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, err error) {
 	var sc certs.StoredCertificate
 	if sc, err = a.db.Certs().Get(key); err != nil {
@@ -234,6 +249,26 @@ func (a *App) NewDefaultStampConfig() stamps.StampConfig {
 	sc := stamps.StampConfig{}
 	sc.FromConfig(config.New())
 	return sc
+}
+
+func (a *App) SetUnsavedStamp(sc *stamps.StampConfig) {
+	a.unsavedStamp = sc
+}
+
+func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
+	if a.unsavedStamp == nil {
+		http.Error(w, "unsaved stamp not found", http.StatusNotFound)
+		return
+	}
+	cert, err := a.GetDefaultCertificate()
+	if err != nil {
+		http.Error(w, "default certificate not found", http.StatusNotFound)
+		return
+	}
+	unlocked, err := cert.Unlock()
+	date := time.Now()
+	signer.DrawPngImage()
+
 }
 
 func (a *App) handleErr(err error) {

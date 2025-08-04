@@ -39,6 +39,8 @@ export function SetDefaultCertificate(arg1:string):Promise<void>;
 
 export function SetLang(arg1:string):Promise<void>;
 
+export function SetUnsavedStamp(arg1:stamps.StampConfig):Promise<void>;
+
 export function Settings():Promise<Record<string, string>>;
 
 export function StoreCertificate(arg1:string,arg2:string):Promise<void>;

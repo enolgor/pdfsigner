@@ -74,6 +74,10 @@ export function SetLang(arg1) {
   return window['go']['app']['App']['SetLang'](arg1);
 }
 
+export function SetUnsavedStamp(arg1) {
+  return window['go']['app']['App']['SetUnsavedStamp'](arg1);
+}
+
 export function Settings() {
   return window['go']['app']['App']['Settings']();
 }
