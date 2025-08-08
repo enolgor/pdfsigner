@@ -1,5 +1,23 @@
 export namespace certs {
 	
+	export class StoredCertificate {
+	    Passphrase: string;
+	    Data: number[];
+	    Issuer: string;
+	    Subject: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new StoredCertificate(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Passphrase = source["Passphrase"];
+	        this.Data = source["Data"];
+	        this.Issuer = source["Issuer"];
+	        this.Subject = source["Subject"];
+	    }
+	}
 	export class StoredCertificateID {
 	    Issuer: string;
 	    Subject: string;
@@ -75,6 +93,7 @@ export namespace stamps {
 	export class StampConfig {
 	    title: string;
 	    dateFormat: string;
+	    includeTitle: boolean;
 	    includeSubject: boolean;
 	    includeIssuer: boolean;
 	    includeDate: boolean;
@@ -116,6 +135,7 @@ export namespace stamps {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.title = source["title"];
 	        this.dateFormat = source["dateFormat"];
+	        this.includeTitle = source["includeTitle"];
 	        this.includeSubject = source["includeSubject"];
 	        this.includeIssuer = source["includeIssuer"];
 	        this.includeDate = source["includeDate"];

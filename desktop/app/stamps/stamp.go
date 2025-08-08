@@ -17,6 +17,7 @@ type Alignment = config.Alignment
 type StampConfig struct {
 	Title               string     `json:"title"`
 	DateFormat          string     `json:"dateFormat"`
+	IncludeTitle        bool       `json:"includeTitle"`
 	IncludeSubject      bool       `json:"includeSubject"`
 	IncludeIssuer       bool       `json:"includeIssuer"`
 	IncludeDate         bool       `json:"includeDate"`
@@ -85,6 +86,11 @@ var AllAlignments = []struct {
 
 func (sc *StampConfig) FromConfig(cfg *config.SignatureConfiguration) (err error) {
 	sc.Title = cfg.Title
+	if cfg.Title == "" {
+		sc.IncludeTitle = false
+	} else {
+		sc.IncludeTitle = true
+	}
 	sc.DateFormat = cfg.DateFormat
 	sc.IncludeSubject = cfg.IncludeSubject
 	sc.IncludeIssuer = cfg.IncludeIssuer
@@ -123,7 +129,11 @@ func (sc *StampConfig) FromConfig(cfg *config.SignatureConfiguration) (err error
 
 func (sc *StampConfig) ToConfig(logoDirs string) (*config.SignatureConfiguration, error) {
 	cfg := &config.SignatureConfiguration{}
-	cfg.Title = sc.Title
+	if sc.IncludeTitle {
+		cfg.Title = sc.Title
+	} else {
+		cfg.Title = ""
+	}
 	cfg.DateFormat = sc.DateFormat
 	cfg.IncludeSubject = sc.IncludeSubject
 	cfg.IncludeIssuer = sc.IncludeIssuer

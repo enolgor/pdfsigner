@@ -69,3 +69,55 @@ delete: "Delete"
 set-default: "Set default"
 default-cert: "(default)"
 add-cert: "Add certificate"
+stamp-editor:
+  content: "Content"
+  include-title: "Include title"
+  include-subject: "Include subject"
+  include-issuer: "Include issuer"
+  include-date: "Include date"
+  title: "Title"
+  subject-key: "Subject Key"
+  issuer-key: "Issuer Key"
+  date-key: "Date Key"
+  date-format: "Date format"
+  time-format: "Time format"
+  include-offset: "Include timezone offset"
+  extra-content: "Extra content"
+  add-extra-line: "Add extra line"
+  delete-extra-line: "Delete extra line"
+  key: "Key"
+  value: "Value"
+  variables-info-label: "Value variables"
+  variables-info: "You can use {vars} in the value field to replace them with the corresponding data"
+  image: "Image settings"
+  background-color: "Background color"
+  dpi: "Dpi"
+  rotation: "Rotation"
+  border: "Border"
+  border-size: "Border size"
+  border-color: "Border color"
+  alignment: "Alignment"
+  title-alignment: "Title alignment"
+  line-alignment: "Line alignment"
+  key-alignment: "Key alignment"
+  value-alignment: "Value alignment"
+colorpicker:
+  label:
+    h: 'hue channel'
+    s: 'saturation channel'
+    v: 'brightness channel'
+    r: 'red channel'
+    g: 'green channel'
+    b: 'blue channel'
+    a: 'alpha channel'
+    hex: 'hex color'
+    withoutColor: 'without color'
+  color:
+    rgb: 'rgb'
+    hsv: 'hsv'
+    hex: 'hex'
+  changeTo: 'change to '
+alignment:
+  left: "Left"
+  center: "Center"
+  right: "Right"

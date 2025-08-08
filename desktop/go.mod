@@ -4,7 +4,7 @@ go 1.24.3
 
 require (
 	github.com/Jipok/go-persist v1.9.2
-	github.com/enolgor/pdfsigner/signer v1.0.2
+	github.com/enolgor/pdfsigner/signer v1.0.3
 	github.com/goccy/go-json v0.10.5
 	github.com/goccy/go-yaml v1.18.0
 	github.com/goforj/godump v1.5.0

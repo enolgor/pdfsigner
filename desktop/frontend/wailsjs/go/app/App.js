@@ -18,6 +18,10 @@ export function GetCertificateID(arg1, arg2) {
   return window['go']['app']['App']['GetCertificateID'](arg1, arg2);
 }
 
+export function GetDefaultCertificate() {
+  return window['go']['app']['App']['GetDefaultCertificate']();
+}
+
 export function GetFallbackLang() {
   return window['go']['app']['App']['GetFallbackLang']();
 }

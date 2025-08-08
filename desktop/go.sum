@@ -13,8 +13,8 @@ github.com/digitorus/pkcs7 v0.0.0-20250730155240-ffadbf3f398c h1:g349iS+CtAvba7i
 github.com/digitorus/pkcs7 v0.0.0-20250730155240-ffadbf3f398c/go.mod h1:mCGGmWkOQvEuLdIRfPIpXViBfpWto4AhwtJlAvo62SQ=
 github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea h1:ALRwvjsSP53QmnN3Bcj0NpR8SsFLnskny/EIMebAk1c=
 github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea/go.mod h1:GvWntX9qiTlOud0WkQ6ewFm0LPy5JUR1Xo0Ngbd1w6Y=
-github.com/enolgor/pdfsigner/signer v1.0.2 h1:fe/hWS0f0xPG8eni5G+rCr2UE+KlTLuiu2n82a03Dw0=
-github.com/enolgor/pdfsigner/signer v1.0.2/go.mod h1:XHcsllcHMAv3gdiAYG1Y5CvL8i9yuv7yTd2lnakSwfc=
+github.com/enolgor/pdfsigner/signer v1.0.3 h1:905DHGyxHNcL/vwO7mf7dJ4LqIsKoorxZ8HngVQBPMo=
+github.com/enolgor/pdfsigner/signer v1.0.3/go.mod h1:XHcsllcHMAv3gdiAYG1Y5CvL8i9yuv7yTd2lnakSwfc=
 github.com/fogleman/gg v1.3.0 h1:/7zJX8F6AaYQc57WQCyN9cAIz+4bCJGO9B+dyW29am8=
 github.com/fogleman/gg v1.3.0/go.mod h1:R/bRT+9gY/C5z7JzPU0zXsXHKM4/ayA+zqcVNZzPa1k=
 github.com/go-ole/go-ole v1.3.0 h1:Dt6ye7+vXGIKZ7Xtk4s6/xVdGDQynvom7xCFEdWr6uE=

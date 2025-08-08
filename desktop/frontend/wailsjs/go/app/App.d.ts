@@ -11,6 +11,8 @@ export function FirstRunCompleted():Promise<void>;
 
 export function GetCertificateID(arg1:string,arg2:string):Promise<certs.StoredCertificateID>;
 
+export function GetDefaultCertificate():Promise<certs.StoredCertificate>;
+
 export function GetFallbackLang():Promise<string>;
 
 export function GetLang():Promise<string>;

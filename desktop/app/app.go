@@ -58,7 +58,7 @@ type App struct {
 func NewApp(appKey string) *App {
 	app := &App{appKey: appKey}
 	app.Mux = http.NewServeMux()
-	app.Mux.HandleFunc("/unsaved-stamp", app.serveUnsavedStamp)
+	app.Mux.HandleFunc("POST /unsaved-stamp", app.serveUnsavedStamp)
 	return app
 }
 
@@ -260,15 +260,27 @@ func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "unsaved stamp not found", http.StatusNotFound)
 		return
 	}
+	cfg, err := a.unsavedStamp.ToConfig("")
+	if err != nil {
+		http.Error(w, "internal", http.StatusInternalServerError)
+		return
+	}
 	cert, err := a.GetDefaultCertificate()
 	if err != nil {
 		http.Error(w, "default certificate not found", http.StatusNotFound)
 		return
 	}
 	unlocked, err := cert.Unlock()
+	if err != nil {
+		http.Error(w, "internal", http.StatusInternalServerError)
+		return
+	}
 	date := time.Now()
-	signer.DrawPngImage()
-
+	w.Header().Add("Content-Type", "image/png")
+	if err := signer.DrawPngImage(w, date, unlocked, cfg); err != nil {
+		http.Error(w, "internal", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (a *App) handleErr(err error) {
