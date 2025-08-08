@@ -8,7 +8,7 @@ require (
 	github.com/fogleman/gg v1.3.0
 	github.com/pdfcpu/pdfcpu v0.11.0
 	github.com/rotisserie/eris v0.5.4
-	golang.org/x/image v0.29.0
+	golang.org/x/image v0.30.0
 	software.sslmate.com/src/go-pkcs12 v0.6.0
 )
 
@@ -24,6 +24,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/crypto v0.40.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
