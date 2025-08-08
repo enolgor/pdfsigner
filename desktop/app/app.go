@@ -26,6 +26,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -38,6 +39,7 @@ import (
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/enolgor/pdfsigner/signer"
 	"github.com/enolgor/pdfsigner/signer/config"
+	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -52,6 +54,7 @@ type App struct {
 	db           *store.DB
 	unsavedStamp *stamps.StampConfig
 	Mux          *http.ServeMux
+	logoDir      string
 }
 
 // NewApp creates a new App application struct
@@ -86,6 +89,8 @@ func (a *App) Startup(ctx context.Context) {
 			a.db.Flags().Set("first-run", true)
 		}
 	}
+	a.logoDir = path.Join(a.dataDir, "logos")
+	os.Mkdir(a.logoDir, os.ModePerm)
 }
 
 // Greet returns a greeting for the given name
@@ -255,12 +260,28 @@ func (a *App) SetUnsavedStamp(sc *stamps.StampConfig) {
 	a.unsavedStamp = sc
 }
 
+func (a *App) StoreLogo(logopath string) (string, error) {
+	name := uuid.NewString() + ".png"
+	copy, err := os.OpenFile(path.Join(a.logoDir, name), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+	if err != nil {
+		return "", err
+	}
+	defer copy.Close()
+	original, err := os.Open(logopath)
+	if err != nil {
+		return "", err
+	}
+	defer original.Close()
+	_, err = io.Copy(copy, original)
+	return name, err
+}
+
 func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
 	if a.unsavedStamp == nil {
 		http.Error(w, "unsaved stamp not found", http.StatusNotFound)
 		return
 	}
-	cfg, err := a.unsavedStamp.ToConfig("")
+	cfg, err := a.unsavedStamp.ToConfig(a.logoDir)
 	if err != nil {
 		http.Error(w, "internal", http.StatusInternalServerError)
 		return

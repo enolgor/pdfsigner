@@ -47,6 +47,8 @@ export function Settings():Promise<Record<string, string>>;
 
 export function StoreCertificate(arg1:string,arg2:string):Promise<void>;
 
+export function StoreLogo(arg1:string):Promise<string>;
+
 export function Translations():Promise<Record<string, Record<string, string>>>;
 
 export function UnlockStore(arg1:string):Promise<void>;

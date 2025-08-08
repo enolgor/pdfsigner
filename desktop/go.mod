@@ -8,6 +8,7 @@ require (
 	github.com/goccy/go-json v0.10.5
 	github.com/goccy/go-yaml v1.18.0
 	github.com/goforj/godump v1.5.0
+	github.com/google/uuid v1.6.0
 	github.com/kaptinlin/go-i18n v0.1.4
 	github.com/rotisserie/eris v0.5.4
 	github.com/wailsapp/wails/v2 v2.10.2
@@ -24,7 +25,6 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/gotnospirit/makeplural v0.0.0-20180622080156-a5f48d94d976 // indirect
 	github.com/gotnospirit/messageformat v0.0.0-20221001023931-dfe49f1eb092 // indirect

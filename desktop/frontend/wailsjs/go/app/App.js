@@ -90,6 +90,10 @@ export function StoreCertificate(arg1, arg2) {
   return window['go']['app']['App']['StoreCertificate'](arg1, arg2);
 }
 
+export function StoreLogo(arg1) {
+  return window['go']['app']['App']['StoreLogo'](arg1);
+}
+
 export function Translations() {
   return window['go']['app']['App']['Translations']();
 }

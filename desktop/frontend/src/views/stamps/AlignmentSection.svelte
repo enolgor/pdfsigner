@@ -25,4 +25,7 @@
   <FormGroup>
     <AlignmentButtonset label={$_("stamp-editor.value-alignment")} bind:alignment={stamp.valueAlignment} disabled={stamp.lineAlignment !== config.Alignment.CENTER} />
   </FormGroup>
+  <FormGroup>
+    <AlignmentButtonset label={$_("stamp-editor.logo-alignment")} bind:alignment={stamp.logoAlignment} />
+  </FormGroup>
 </Form>

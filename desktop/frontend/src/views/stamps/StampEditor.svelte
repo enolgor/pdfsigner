@@ -16,9 +16,10 @@
   import ImageSection from "./ImageSection.svelte";
   import BorderSection from "./BorderSection.svelte";
   import AlignmentSection from "./AlignmentSection.svelte";
+    import LogoSection from "./LogoSection.svelte";
 
   let stamp : stamps.StampConfig | undefined = $state();
-  let sectionStates : boolean[] = $state([false, false, false, false, false]);
+  let sectionStates : boolean[] = $state([false, false, false, false, false, false]);
 
   onMount(async () => {
     stamp = await NewDefaultStampConfig();
@@ -63,7 +64,10 @@
             <AccordionItem title={$_("stamp-editor.border")} bind:open={sectionStates[3]}>
               <BorderSection bind:stamp />
             </AccordionItem>
-            <AccordionItem title={$_("stamp-editor.alignment")} bind:open={sectionStates[4]}>
+             <AccordionItem title={$_("stamp-editor.logo")} bind:open={sectionStates[4]}>
+              <LogoSection bind:stamp />
+            </AccordionItem>
+            <AccordionItem title={$_("stamp-editor.alignment")} bind:open={sectionStates[5]}>
               <AlignmentSection bind:stamp />
             </AccordionItem>
         </Accordion>

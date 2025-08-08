@@ -101,6 +101,11 @@ stamp-editor:
   line-alignment: "Line alignment"
   key-alignment: "Key alignment"
   value-alignment: "Value alignment"
+  logo-alignment: "Logo alignment"
+  logo: "Logo"
+  logo-file: "Logo png file"
+  logo-opacity: "Logo opacity"
+  logo-grayscale: "Logo grayscale"
 colorpicker:
   label:
     h: 'hue channel'
