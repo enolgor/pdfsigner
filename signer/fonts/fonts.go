@@ -47,6 +47,10 @@ var customFonts map[string]string = make(map[string]string)
 type LoadedFont string
 
 func (f LoadedFont) String() string {
+	return f.Name() + " (" + f.Source() + ")"
+}
+
+func (f LoadedFont) Source() string {
 	source := "unavailable"
 	if _, ok := customFonts[string(f)]; ok {
 		source = "custom"
@@ -55,7 +59,11 @@ func (f LoadedFont) String() string {
 	} else if _, ok := systemFonts[string(f)]; ok {
 		source = "system"
 	}
-	return string(f) + " (" + source + ")"
+	return source
+}
+
+func (f LoadedFont) Name() string {
+	return string(f)
 }
 
 var foundFonts []LoadedFont = make([]LoadedFont, 0)
