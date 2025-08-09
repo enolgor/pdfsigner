@@ -62,12 +62,12 @@
     
   </FormGroup>
   <FormGroup>
-    <Select labelText={$_("stamp-editor.date-format")} bind:selected={dateFormat} disabled={!stamp.includeDate} inline>
+    <Select labelText={$_("stamp-editor.date-format")} bind:selected={dateFormat} inline>
       {#each dateFormats as df}
         <SelectItem value={df} text={moment().format(df)} />
       {/each}
     </Select>
-     <Select labelText={$_("stamp-editor.time-format")} bind:selected={timeFormat} disabled={!stamp.includeDate} inline>
+     <Select labelText={$_("stamp-editor.time-format")} bind:selected={timeFormat} inline>
       {#each timeFormats as tf}
         {#if tf == ''}
         <SelectItem value={tf} text='' />
@@ -76,6 +76,6 @@
         {/if}
       {/each}
     </Select>
-    <Checkbox labelText={$_("stamp-editor.include-offset")} bind:checked={includeOffset} disabled={!stamp.includeDate || timeFormat === ''} />
+    <Checkbox labelText={$_("stamp-editor.include-offset")} bind:checked={includeOffset} disabled={timeFormat === ''} />
   </FormGroup>
 </Form>

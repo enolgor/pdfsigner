@@ -27,9 +27,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path"
+	"runtime/debug"
 	"time"
 
 	"github.com/enolgor/pdfsigner/desktop/app/certs"
@@ -39,7 +41,9 @@ import (
 	"github.com/enolgor/pdfsigner/desktop/app/translations"
 	"github.com/enolgor/pdfsigner/signer"
 	"github.com/enolgor/pdfsigner/signer/config"
+	"github.com/enolgor/pdfsigner/signer/fonts"
 	"github.com/google/uuid"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -53,15 +57,26 @@ type App struct {
 	dataDir      string
 	db           *store.DB
 	unsavedStamp *stamps.StampConfig
-	Mux          *http.ServeMux
+	mux          *http.ServeMux
+	Middleware   assetserver.Middleware
 	logoDir      string
 }
 
 // NewApp creates a new App application struct
 func NewApp(appKey string) *App {
 	app := &App{appKey: appKey}
-	app.Mux = http.NewServeMux()
-	app.Mux.HandleFunc("POST /unsaved-stamp", app.serveUnsavedStamp)
+	app.mux = http.NewServeMux()
+	app.mux.HandleFunc("GET /unsaved-stamp.png", app.serveUnsavedStamp)
+	app.Middleware = func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			handler, pattern := app.mux.Handler(req)
+			if pattern == "" {
+				next.ServeHTTP(w, req)
+				return
+			}
+			handler.ServeHTTP(w, req)
+		})
+	}
 	return app
 }
 
@@ -276,7 +291,29 @@ func (a *App) StoreLogo(logopath string) (string, error) {
 	return name, err
 }
 
+func (a *App) ListFonts() map[string][]string {
+	fts := make(map[string][]string)
+	for _, ft := range fonts.ListLoadedFonts() {
+		cat, ok := fts[ft.Source()]
+		if !ok {
+			cat = []string{}
+		}
+		cat = append(cat, ft.Name())
+		fts[ft.Source()] = cat
+	}
+	return fts
+}
+
 func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			// log the panic
+			log.Printf("panic in handler: %v\n%s", err, debug.Stack())
+
+			// send an HTTP 500
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+	}()
 	if a.unsavedStamp == nil {
 		http.Error(w, "unsaved stamp not found", http.StatusNotFound)
 		return
@@ -302,6 +339,10 @@ func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "internal", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (a *App) test(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(w, "this is a test")
 }
 
 func (a *App) handleErr(err error) {

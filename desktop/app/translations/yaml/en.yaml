@@ -57,7 +57,7 @@ unset-master-password: "Unset password"
 select-p12: "Select a .p12 certificate"
 cant-drop-multiple: "Error: Multiple files dropped"
 wrong-file-drop: "Error: Wrong file type dropped"
-selected-file: "Selected file {filename}"
+selected-file: "Selected file: {filename}"
 drop-a-file: "Drop a file here or click to choose one"
 certificate-passphrase: "Certificate passphrase"
 passphrase: "Passphrase"
@@ -106,6 +106,13 @@ stamp-editor:
   logo-file: "Logo png file"
   logo-opacity: "Logo opacity"
   logo-grayscale: "Logo grayscale"
+  fonts: "Fonts"
+  title-font: "Title font"
+  key-font: "Key font"
+  value-font: "Value font"
+  title-color: "Title color"
+  key-color: "Key color"
+  value-color: "Value color"
 colorpicker:
   label:
     h: 'hue channel'

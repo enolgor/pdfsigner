@@ -29,6 +29,8 @@ export function IsStoreProtected():Promise<boolean>;
 
 export function ListCertificates():Promise<Array<string>>;
 
+export function ListFonts():Promise<Record<string, Array<string>>>;
+
 export function NewDefaultStampConfig():Promise<stamps.StampConfig>;
 
 export function OpenFileDialog(arg1:string):Promise<string>;

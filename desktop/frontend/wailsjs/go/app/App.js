@@ -54,6 +54,10 @@ export function ListCertificates() {
   return window['go']['app']['App']['ListCertificates']();
 }
 
+export function ListFonts() {
+  return window['go']['app']['App']['ListFonts']();
+}
+
 export function NewDefaultStampConfig() {
   return window['go']['app']['App']['NewDefaultStampConfig']();
 }

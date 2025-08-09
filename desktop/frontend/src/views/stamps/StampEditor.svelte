@@ -17,9 +17,10 @@
   import BorderSection from "./BorderSection.svelte";
   import AlignmentSection from "./AlignmentSection.svelte";
     import LogoSection from "./LogoSection.svelte";
+    import FontsSection from "./FontsSection.svelte";
 
   let stamp : stamps.StampConfig | undefined = $state();
-  let sectionStates : boolean[] = $state([false, false, false, false, false, false]);
+  let sectionStates : boolean[] = $state([false, false, false, false, false, false, false]);
 
   onMount(async () => {
     stamp = await NewDefaultStampConfig();
@@ -34,11 +35,9 @@
   });
 
   let image : HTMLImageElement | undefined = $state();
-  async function renderStamp() {
+  function renderStamp() {
     if (image) {
-      const resp = await fetch("/unsaved-stamp", { method: "POST" });
-      const blob = await resp.blob();
-      image.src = URL.createObjectURL(blob);
+     image.src = `/unsaved-stamp.png?${new Date().getTime()}`;
     }
   }
 </script>
@@ -48,7 +47,7 @@
   <Grid>
     <Row>
       <Column>
-        <img alt="stamp" class="stamp" bind:this={image} />
+        <img alt="stamp" class="stamp" bind:this={image} src="/unsaved-stamp.png" />
       </Column>
       <Column>
         <Accordion size="sm">
@@ -70,6 +69,9 @@
             <AccordionItem title={$_("stamp-editor.alignment")} bind:open={sectionStates[5]}>
               <AlignmentSection bind:stamp />
             </AccordionItem>
+             <AccordionItem title={$_("stamp-editor.fonts")} bind:open={sectionStates[6]}>
+              <FontsSection bind:stamp />
+            </AccordionItem>
         </Accordion>
       </Column>
     </Row>
@@ -79,6 +81,6 @@
 <style>
   .stamp {
     max-width: 300px;
-    max-height: 300px;
+    /*max-height: 300px;*/
   }
 </style>
