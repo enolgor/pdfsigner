@@ -89,7 +89,7 @@ func SignVisual(cert *UnlockedCertificate, pdfReader *bytes.Reader, writer io.Wr
 	return signPdf(pdfReader, writer, getSignData(date, cert, metadata, getAppearance(imageData.Bytes(), conf), opts))
 }
 
-func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
+func DrawImage(date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (image image.Image, err error) {
 	if err = parseTextTemplates(cert, date, conf); err != nil {
 		err = eris.Wrap(err, "failed to parse text templates")
 		return
@@ -99,7 +99,6 @@ func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *
 		err = eris.New("no text to draw")
 		return
 	}
-	var image image.Image
 	if conf.HeightPt == 0 && conf.WidthPt != 0 {
 		image, err = drawWithKnownWidth(text, conf)
 	} else if conf.HeightPt != 0 && conf.WidthPt == 0 {
@@ -108,7 +107,8 @@ func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *
 		image, err = drawWithKnownWidthAndHeight(text, conf)
 	}
 	if err != nil {
-		return eris.Wrap(err, "failed to draw image")
+		err = eris.Wrap(err, "failed to draw image")
+		return
 	}
 	if image, err = drawer.RotateImage(image, conf); err != nil {
 		err = eris.Wrap(err, "failed to rotate image")
@@ -116,6 +116,14 @@ func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *
 	}
 	if conf.Rotate == config.ROTATE_90 || conf.Rotate == config.ROTATE_270 {
 		conf.HeightPt, conf.WidthPt = conf.WidthPt, conf.HeightPt
+	}
+	return
+}
+
+func DrawPngImage(w io.Writer, date time.Time, cert *UnlockedCertificate, conf *config.SignatureConfiguration) (err error) {
+	var image image.Image
+	if image, err = DrawImage(date, cert, conf); err != nil {
+		return
 	}
 	err = eris.Wrap(png.Encode(w, image), "failed to encode image")
 	return
