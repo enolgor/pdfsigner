@@ -23,15 +23,15 @@
 package app
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"image/png"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
-	"runtime/debug"
 	"time"
 
 	"github.com/enolgor/pdfsigner/desktop/app/certs"
@@ -51,20 +51,26 @@ var t = translations.Translate
 
 // App struct
 type App struct {
-	ctx          context.Context
-	appKey       string
-	settings     *settings.Settings
-	dataDir      string
-	db           *store.DB
-	unsavedStamp *stamps.StampConfig
-	mux          *http.ServeMux
-	Middleware   assetserver.Middleware
-	logoDir      string
+	ctx                context.Context
+	appKey             string
+	settings           *settings.Settings
+	dataDir            string
+	db                 *store.DB
+	unsavedStamp       *stamps.StampConfig
+	mux                *http.ServeMux
+	Middleware         assetserver.Middleware
+	logoDir            string
+	unsavedBuffer      *bytes.Buffer
+	defaultCertificate *signer.UnlockedCertificate
+	pngEncoder         png.Encoder
 }
 
 // NewApp creates a new App application struct
 func NewApp(appKey string) *App {
-	app := &App{appKey: appKey}
+	app := &App{appKey: appKey, unsavedBuffer: new(bytes.Buffer)}
+	app.pngEncoder = png.Encoder{
+		CompressionLevel: png.NoCompression,
+	}
 	app.mux = http.NewServeMux()
 	app.mux.HandleFunc("GET /unsaved-stamp.png", app.serveUnsavedStamp)
 	app.Middleware = func(next http.Handler) http.Handler {
@@ -106,11 +112,6 @@ func (a *App) Startup(ctx context.Context) {
 	}
 	a.logoDir = path.Join(a.dataDir, "logos")
 	os.Mkdir(a.logoDir, os.ModePerm)
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return t("hello", translations.Vars{"name": name})
 }
 
 func (a *App) Translations() map[string]map[string]string {
@@ -247,13 +248,22 @@ func (a *App) SetDefaultCertificate(key string) {
 	a.db.Certs().Move(key, 0)
 }
 
-func (a *App) GetDefaultCertificate() (cert certs.StoredCertificate, err error) {
-	keys := a.db.Certs().Keys()
-	if len(keys) == 0 {
-		err = errors.New("no certificates") //TODO
-		return
+func (a *App) getDefaultCertificate() (unlocked *signer.UnlockedCertificate, err error) {
+	if a.defaultCertificate == nil {
+		keys := a.db.Certs().Keys()
+		if len(keys) == 0 {
+			err = errors.New("no certificates") //TODO
+			return
+		}
+		var cert certs.StoredCertificate
+		if cert, err = a.db.Certs().Get(keys[0]); err != nil {
+			return //TODO
+		}
+		if a.defaultCertificate, err = cert.Unlock(); err != nil {
+			return
+		}
 	}
-	return a.db.Certs().Get(keys[0])
+	return a.defaultCertificate, nil
 }
 
 func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, err error) {
@@ -265,14 +275,28 @@ func (a *App) GetStoredCertificateID(key string) (id certs.StoredCertificateID, 
 	return
 }
 
-func (a *App) NewDefaultStampConfig() stamps.StampConfig {
+func (a *App) NewUnsavedStamp() stamps.StampConfig {
 	sc := stamps.StampConfig{}
 	sc.FromConfig(config.New())
 	return sc
 }
 
-func (a *App) SetUnsavedStamp(sc *stamps.StampConfig) {
+func (a *App) SetUnsavedStamp(sc *stamps.StampConfig) error {
 	a.unsavedStamp = sc
+	unlocked, err := a.getDefaultCertificate()
+	if err != nil {
+		return err
+	}
+	cfg, err := sc.ToConfig(a.logoDir)
+	if err != nil {
+		return err
+	}
+	date := time.Now()
+	image, err := signer.DrawImage(date, unlocked, cfg)
+	if err != nil {
+		return err
+	}
+	return a.pngEncoder.Encode(a.unsavedBuffer, image)
 }
 
 func (a *App) StoreLogo(logopath string) (string, error) {
@@ -305,44 +329,8 @@ func (a *App) ListFonts() map[string][]string {
 }
 
 func (a *App) serveUnsavedStamp(w http.ResponseWriter, req *http.Request) {
-	defer func() {
-		if err := recover(); err != nil {
-			// log the panic
-			log.Printf("panic in handler: %v\n%s", err, debug.Stack())
-
-			// send an HTTP 500
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
-	}()
-	if a.unsavedStamp == nil {
-		http.Error(w, "unsaved stamp not found", http.StatusNotFound)
-		return
-	}
-	cfg, err := a.unsavedStamp.ToConfig(a.logoDir)
-	if err != nil {
-		http.Error(w, "internal", http.StatusInternalServerError)
-		return
-	}
-	cert, err := a.GetDefaultCertificate()
-	if err != nil {
-		http.Error(w, "default certificate not found", http.StatusNotFound)
-		return
-	}
-	unlocked, err := cert.Unlock()
-	if err != nil {
-		http.Error(w, "internal", http.StatusInternalServerError)
-		return
-	}
-	date := time.Now()
 	w.Header().Add("Content-Type", "image/png")
-	if err := signer.DrawPngImage(w, date, unlocked, cfg); err != nil {
-		http.Error(w, "internal", http.StatusInternalServerError)
-		return
-	}
-}
-
-func (a *App) test(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(w, "this is a test")
+	io.Copy(w, a.unsavedBuffer)
 }
 
 func (a *App) handleErr(err error) {

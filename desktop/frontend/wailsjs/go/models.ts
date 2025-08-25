@@ -1,23 +1,5 @@
 export namespace certs {
 	
-	export class StoredCertificate {
-	    Passphrase: string;
-	    Data: number[];
-	    Issuer: string;
-	    Subject: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new StoredCertificate(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.Passphrase = source["Passphrase"];
-	        this.Data = source["Data"];
-	        this.Issuer = source["Issuer"];
-	        this.Subject = source["Subject"];
-	    }
-	}
 	export class StoredCertificateID {
 	    Issuer: string;
 	    Subject: string;

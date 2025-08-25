@@ -10,27 +10,28 @@
   } from "carbon-components-svelte";
   import { onMount } from 'svelte';
   import { stamps } from "@models";
-  import { NewDefaultStampConfig, SetUnsavedStamp } from "@go";
+  import { NewUnsavedStamp, SetUnsavedStamp } from "@go";
   import ContentSection from "./ContentSection.svelte";
   import ExtraContent from "./ExtraContent.svelte";
   import ImageSection from "./ImageSection.svelte";
   import BorderSection from "./BorderSection.svelte";
   import AlignmentSection from "./AlignmentSection.svelte";
-    import LogoSection from "./LogoSection.svelte";
-    import FontsSection from "./FontsSection.svelte";
+  import LogoSection from "./LogoSection.svelte";
+  import FontsSection from "./FontsSection.svelte";
 
   let stamp : stamps.StampConfig | undefined = $state();
   let sectionStates : boolean[] = $state([false, false, false, false, false, false, false]);
 
   onMount(async () => {
-    stamp = await NewDefaultStampConfig();
+    stamp = await NewUnsavedStamp();
   });
 
 
   $effect(() => {
     if (stamp) {
-      SetUnsavedStamp(stamp)
-      renderStamp();
+      SetUnsavedStamp(stamp).then(() => renderStamp()).catch((err) => {
+        console.error(err); //TODO
+      });
     }
   });
 
