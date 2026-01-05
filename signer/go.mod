@@ -3,7 +3,7 @@ module github.com/enolgor/pdfsigner/signer
 go 1.24.3
 
 require (
-	github.com/digitorus/pdf v0.1.2
+	github.com/digitorus/pdf v0.2.0
 	github.com/digitorus/pdfsign v0.0.0-20250716093838-11060e180e9c
 	github.com/fogleman/gg v1.3.0
 	github.com/pdfcpu/pdfcpu v0.11.0
