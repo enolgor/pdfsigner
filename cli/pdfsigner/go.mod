@@ -4,7 +4,7 @@ go 1.24.3
 
 require (
 	github.com/enolgor/pdfsigner/signer v1.0.1
-	github.com/mazznoer/csscolorparser v0.1.6
+	github.com/mazznoer/csscolorparser v0.1.8
 	github.com/rotisserie/eris v0.5.4
 	github.com/urfave/cli/v3 v3.3.8
 )
